@@ -8,13 +8,17 @@ Adalberto e Diogo.
 
 /*Fontes de Referencia:
 
-Estruturas de dado Arvore:  https://www.freecodecamp.org/portuguese/news/tudo-o-que-voce-precisa-saber-sobre-estruturas-de-dados-em-arvore/amp/
-Varredura infixa e pos fixa de uma arvore binaria: https://www.ime.usp.br/~pf/algoritmos/aulas/bint.html
-Estruturas de grafos: https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/graphdatastructs.html
-Percuso em arvores: http://www.ic.uff.br/~boeres/slides_ed/ed_ArvoresPercursos.pdf
+Estruturas de dado Arvore:                          https://www.freecodecamp.org/portuguese/news/tudo-o-que-voce-precisa-saber-sobre-estruturas-de-dados-em-arvore/amp/
+Varredura infixa e pos fixa de uma arvore binaria:  https://www.ime.usp.br/~pf/algoritmos/aulas/bint.html
+Estruturas de grafos:                               https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/graphdatastructs.html
+Percuso em arvores:                                 http://www.ic.uff.br/~boeres/slides_ed/ed_ArvoresPercursos.pdf
 
-Manipulacao de arquivos e ideias de projeto: https://chat.openai.com/
+Manipulacao de arquivos e ideias de projeto:        https://chat.openai.com/
 Metodo de pesquisa em busca de informacoes do projeto: Bing AI */
+
+/*dados de entrada : nome, idade, peso, ficha de saude, caracteristicas fisicas e parentesco*/
+
+/*estruturas: funções, estruturas de dados(vetores, structs, grafos(arvores, listas)), alocação dinâmica, busca, ordenação, manipulaçao de arquivos binarios*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -82,7 +86,7 @@ typedef struct no {
 // funcoes para escrever e ler os dados dos integrantes em arquivos
 
 short int cria_pastas           (void);         //funcao para a criacao de pastas, tipo short int pois o short int ja é mais que o necessario para essa funcao.
-void escrever_arquivo(casal *C, char opcao);    //funcao para escrever as informacoes em um arquivo binario.
+int escrever_arquivo(casal *C, char opcao);    //funcao para escrever as informacoes em um arquivo binario.
 //void ler_arquivo        (pessoa *P);           //funcao para ler os dados da pessoa.
 
 //funcoes de manipulacao da arvore.
@@ -104,8 +108,7 @@ int main(void){
     cria(&arvoreGenealogica);
     
     cria_pastas();
-    //Adiciona_Pessoa(&C);
-    Adiciona_filho(&C);
+    Adiciona_Pessoa(&C);
     
     printf("-----|ARVORE GENEALOGICA.|-----\n");
 }
@@ -138,38 +141,50 @@ short int cria_pastas               (void){
      else                                       //normalmente a cada vez que reiniciar o programa e as pastas já estiverem crias, ele entrará nesse else.
       printf("Falha ao criar pasta\n");         //eh possivel resolver isso de uma forma mais adequada, mas teria que incluir mais bibliotecas.
 
-    return 0;
+    return 1;
 }
 
 short int Adiciona_Pessoa       (casal *C){
 
-    char opcao;
+    char opcao[2];
 
     do{
         printf("Quem voce deseja adicionar: filho(1) / conjugue(2)?\n");
-        fgets(&opcao, sizeof(opcao), stdin);
-
+        fgets(opcao, sizeof(opcao), stdin);
         
-            //Adiciona_filho(C);
-
-        if(opcao == '2')
+        getchar();
+        printf("opcao: %s\n",opcao);
+        
+        if(opcao[0] == '1'){
+            Adiciona_filho(C);
+            break;
+        }
+        else if(opcao[0] == '2'){
             Adiciona_conjugue(C);
+            break;
+        }
         else
             printf("|ERRO! Opcao invalida.");
 
-    }while((opcao != '1') && (opcao != '2'));
+    }while(1);
 
-    escrever_arquivo(C, opcao);
+    escrever_arquivo(C, opcao[0]);
 
-    return 0;
+    return 1;
 }
 
-void Adiciona_filho             (casal *C){            
+void Adiciona_filho             (casal *C){    
 
-    printf("Digite o ID: ");                //usando fgets para ter mais segurança e nao ocasionar em um overflow, fgets normalmente le uma linha inteira de uma só vez.
-    fgets(C->filho->ID, sizeof((C->filho->ID) + 1), stdin); //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
-    C->filho->ID[strcspn(C->filho->ID, "\n")] = '\0';     //substitui o caractere de quebra de linha (\n) pelo caractere nulo (\0) na string filho.nome.  //evita possiveis problemas na string
+    C->filho = malloc(sizeof(filho)); // Aloca memória para a estrutura filho dentro de casal
+    if (C->filho == NULL) {
+        // Trate o erro de alocação de memória
+        printf("Erro ao alocar memória para filho\n");
+        return;
+    }        
 
+    printf("Digite o ID do filho: ");                       //usando fgets para ter mais segurança e nao ocasionar em um overflow, fgets normalmente le uma linha inteira de uma só vez.
+    fgets(C->filho->ID, sizeof(C->filho->ID) + 1, stdin);  //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
+    C->filho->ID[strcspn(C->filho->ID, "\n")] = '\0';       //substitui o caractere de quebra de linha (\n) pelo caractere nulo (\0) na string filho.nome.  //evita possiveis problemas na string
     printf("Digite o nome: ");
     fgets(C->filho->nome, sizeof(C->filho->nome), stdin);
     C->filho->nome[strcspn(C->filho->nome, "\n")] = '\0'; 
@@ -187,6 +202,13 @@ void Adiciona_filho             (casal *C){
 }
 
 void Adiciona_conjugue          (casal *C){
+
+    C->conjugue = malloc(sizeof(conjugue)); // Aloca memória para a estrutura filho dentro de casal
+    if (C->conjugue == NULL) {
+        // Trate o erro de alocação de memória
+        printf("Erro ao alocar memória para conjugue\n");
+        return;
+    }  
 
     printf("Digite o ID: ");                //usando fgets para ter mais segurança e nao ocasionar em um overflow, fgets normalmente le uma linha inteira de uma só vez.
     fgets(C->conjugue->ID, sizeof((C->conjugue->ID) + 1), stdin); //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
@@ -208,46 +230,66 @@ void Adiciona_conjugue          (casal *C){
 
 }
 
-void escrever_arquivo(casal *C, char opcao){
-
-    printf("lido: %s\n", C->filho->ID);
-    printf("lido: %s\n", C->filho->nome);
-    printf("lido: %d\n", C->filho->idade);
-    printf("lido: %f\n", C->filho->peso);
+int escrever_arquivo(casal *C, char opcao){
 
     FILE *file;
     char nome_arquivo[50];
+    char nome_arquivo_registro[50];
 
     if(opcao == '1'){
 
         if(C->filho->ID[0] == '1'){
 
+            // Salvar em arquivo na pasta "Homens"
             sprintf(nome_arquivo, "./Homens/%s.bin", C->filho->ID);
-            sprintf(nome_arquivo, "./Registro/%s.bin", C->filho->ID);
 
             file = fopen(nome_arquivo, "wb");
 
             if (file == NULL) {
                 printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
-                return;
+                return 0;
             }
             fwrite(&C->filho, sizeof(C->filho), 1, file);
 
             fclose(file);
+
+            // Salvar em arquivo na pasta "Registro"
+            sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->filho->ID);
+
+            file = fopen(nome_arquivo_registro, "wb");
+
+            if (file == NULL) {
+                printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
+                return 0;
+            }
+            fwrite(&C->filho, sizeof(C->filho), 1, file);
+            fclose(file);
+
         }
         else if(C->filho->ID[0] == '0'){
 
-            sprintf(nome_arquivo, "./Mulheres/%s.bin",C->filho->ID);
-            sprintf(nome_arquivo, "./Registro/%s.bin", C->filho->ID);
+             // Salvar em arquivo na pasta "Mulheres"
 
+            sprintf(nome_arquivo, "./Mulheres/%s.bin", C->filho->ID);
             file = fopen(nome_arquivo, "wb");
-
             if (file == NULL) {
                 printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
-                return;
+                return 0;
             }
             fwrite(&C->filho, sizeof(C->filho), 1, file);
+            fclose(file);
 
+            // Salvar em arquivo na pasta "Registro"
+
+            sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->filho->ID);
+
+            file = fopen(nome_arquivo_registro, "wb");
+
+            if (file == NULL) {
+                printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
+                return 0;
+            }
+            fwrite(&C->filho, sizeof(C->filho), 1, file);
             fclose(file);
         }
     }
@@ -255,34 +297,62 @@ void escrever_arquivo(casal *C, char opcao){
 
         if(C->conjugue->ID[0] == '1'){
 
-            sprintf(nome_arquivo, "./Homens/%s.bin",C->conjugue->ID);
-            sprintf(nome_arquivo, "./Registro/%s.bin", C->conjugue->ID);
+        // Salvar em arquivo na pasta "Homens"
 
-            file = fopen(nome_arquivo, "wb");
+        sprintf(nome_arquivo, "./Homens/%s.bin", C->conjugue->ID);
 
-            if (file == NULL) {
-                printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
-                return;
-            }
-            fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
+        file = fopen(nome_arquivo, "wb");
 
-            fclose(file);
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
+            return 0;
+        }
+
+        fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
+        fclose(file);
+
+        // Salvar em arquivo na pasta "Registro"
+
+        sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->conjugue->ID);
+        file = fopen(nome_arquivo_registro, "wb");
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
+            return 0;
+        }
+        fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
+        fclose(file);
+
         }
         else if(C->conjugue->ID[0] == '0'){
 
-            sprintf(nome_arquivo, "./Mulheres/%s.bin",C->conjugue->ID);
-            sprintf(nome_arquivo, "./Registro/%s.bin", C->conjugue->ID);
+            // Salvar em arquivo na pasta "Mulheres"
+            sprintf(nome_arquivo, "./Mulheres/%s.bin", C->conjugue->ID);
 
             file = fopen(nome_arquivo, "wb");
 
             if (file == NULL) {
                 printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
-                return;
+                return 0;
+            }
+            fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
+            fclose(file);
+
+            // Salvar em arquivo na pasta "Registro"
+
+            sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->conjugue->ID);
+
+            file = fopen(nome_arquivo_registro, "wb");
+
+            if (file == NULL) {
+                printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
+                return 0;
             }
             fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
 
             fclose(file);
         }  
     }
+    return 1;
 }
+
 

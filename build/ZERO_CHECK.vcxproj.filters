@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\adalb\OneDrive\Área de Trabalho\Projeto Arvore Genealogica\output\build\CMakeFiles\bd37c080135fc47604f826f426ba7e17\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B30F9EFF-768E-38EF-AB70-7DF9F529F67E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

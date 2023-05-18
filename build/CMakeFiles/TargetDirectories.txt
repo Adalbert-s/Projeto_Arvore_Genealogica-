@@ -1,0 +1,3 @@
+C:/Users/adalb/OneDrive/Área de Trabalho/Projeto Arvore Genealogica/output/build/CMakeFiles/Arvore_genealogica.dir
+C:/Users/adalb/OneDrive/Área de Trabalho/Projeto Arvore Genealogica/output/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/adalb/OneDrive/Área de Trabalho/Projeto Arvore Genealogica/output/build/CMakeFiles/ZERO_CHECK.dir

@@ -3,8 +3,10 @@ objetivo:
 Arvore genealogia que detecta possiveis eventuais doencas que os filhos possam ter.
 
 criadores:
-Adalberto e Diogo.
+Adalberto, Diogo e Matheus.
 */
+
+/*https://github.com/Adalbert-s/Projeto_Arvore_Genealogica-*/
 
 /*Fontes de Referencia:
 

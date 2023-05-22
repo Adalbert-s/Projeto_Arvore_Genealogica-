@@ -12,7 +12,7 @@ filhos do casal.
 
 **Autores**
 
-Adalberto, Diogo e Matheus
+Adalberto, Diogo e Matheus.
 
 
 =========================================================================================

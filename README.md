@@ -2,15 +2,18 @@
 
 =========================================================================================
 
-**Autores**
-
-Adalberto, Diogo e Matheus
-
 O projeto de Árvore Genealógica e Análise Hereditária é uma aplicação que permite coletar 
 dados clínicos de cada membro da família e, com base em algoritmos de pesquisa, fornecer 
 informações sobre as chances de os filhos de um casal específico desenvolverem doenças 
 hereditárias. Além disso,o projeto oferece estatísticas relacionadas à aparência dos futuros 
 filhos do casal.
+
+=========================================================================================
+
+**Autores**
+
+Adalberto, Diogo e Matheus
+
 
 =========================================================================================
 

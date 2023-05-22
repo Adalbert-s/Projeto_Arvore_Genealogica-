@@ -57,7 +57,7 @@ Versão do compilador 20.03.
 
 ===========================================================================
 
-**instruções de uso do código**
+**Instruções de uso do código**
 
 -Fazer o donwload dos arquivos.
 

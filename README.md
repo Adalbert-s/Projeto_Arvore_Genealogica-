@@ -1,6 +1,6 @@
 --Projeto: Árvore Genealógica e Análise Hereditária--
 
-============================================================================
+===========================================================================
 
 O projeto de Árvore Genealógica e Análise Hereditária é uma aplicação que permite coletar 
 dados clínicos de cada membro da família e, com base em algoritmos de pesquisa, fornecer 
@@ -8,13 +8,13 @@ informações sobre as chances de os filhos de um casal específico desenvolvere
 hereditárias. Além disso,o projeto oferece estatísticas relacionadas à aparência dos futuros 
 filhos do casal.
 
-============================================================================
+===========================================================================
 
 **Autores**
 
 Adalberto, Diogo e Matheus.
 
-============================================================================
+===========================================================================
 
 
 **Funcionalidades Principais**
@@ -38,7 +38,7 @@ Visualização de Resultados: Os resultados das análises hereditárias e estat�
 aparência são apresentados de forma clara e compreensível para o usuário final, 
 permitindo que eles entendam facilmente as informações obtidas.
 
-============================================================================
+===========================================================================
 
 **Como Contribuir**
 
@@ -47,15 +47,28 @@ solicitações de pull e colaborar no desenvolvimento contínuo do código. Sua 
 bem-vinda para melhorar as funcionalidades existentes, adicionar novos recursos e 
 aprimorar a precisão dos algoritmos de análise.
 
-============================================================================
+===========================================================================
 
 **Requisitos**
 
-GCC Instalado
-Versão do compilador 20.03
+GCC Instalado.
+
+Versão do compilador 20.03.
+
+===========================================================================
+
+**instruções de uso do código**
+
+-Fazer o donwload dos arquivos.
+
+-Não renomear os nomes das pastas.
+
+-Executar o CMake (localizado na pasta build).
+
+===========================================================================
 
 Fontes de Referência
-----------------------------------------------------------------------------
+---------------------------------------------------------------------------
 -Estruturas de dado Arvore:  https://www.freecodecamp.org/portuguese/news/tudo-o-que-voce-precisa-saber-sobre-estruturas-de-dados-em-arvore/amp/
 -Varredura infixa e pos fixa de uma arvore binaria: https://www.ime.usp.br/~pf/algoritmos/aulas/bint.html
 -Estruturas de grafos: https://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/graphdatastructs.html

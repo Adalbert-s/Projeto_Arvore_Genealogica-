@@ -31,7 +31,7 @@ Visualização de Resultados: Os resultados das análises hereditárias e estat�
 aparência são apresentados de forma clara e compreensível para o usuário final, 
 permitindo que eles entendam facilmente as informações obtidas.
 
-===================================================================================
+=======================================================================================
 **Como Contribuir**
 
 Se você deseja contribuir para o projeto, fique à vontade para abrir problemas, enviar 

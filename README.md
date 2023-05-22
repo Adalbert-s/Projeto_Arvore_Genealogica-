@@ -2,6 +2,7 @@
 
 =========================================================================================
 **Autores**
+
 Adalberto e Diogo
 
 O projeto de Árvore Genealógica e Análise Hereditária é uma aplicação que permite coletar 
@@ -43,6 +44,11 @@ bem-vinda para melhorar as funcionalidades existentes, adicionar novos recursos 
 aprimorar a precisão dos algoritmos de análise.
 
 =========================================================================================
+
+**Requisitos**
+
+GCC Instalado
+Versão do compilador 20.03
 
 Fontes de Referência
 -----------------------------------------------------------------------------------------

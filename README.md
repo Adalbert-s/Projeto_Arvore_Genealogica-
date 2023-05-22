@@ -32,6 +32,7 @@ aparência são apresentados de forma clara e compreensível para o usuário fin
 permitindo que eles entendam facilmente as informações obtidas.
 
 =======================================================================================
+
 **Como Contribuir**
 
 Se você deseja contribuir para o projeto, fique à vontade para abrir problemas, enviar 

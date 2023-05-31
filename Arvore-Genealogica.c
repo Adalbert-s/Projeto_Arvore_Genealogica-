@@ -185,7 +185,7 @@ void Adiciona_filho             (casal *C){
     }        
 
     printf("Digite o ID do filho: ");                       //usando fgets para ter mais segurança e nao ocasionar em um overflow, fgets normalmente le uma linha inteira de uma só vez.
-    fgets(C->filho->ID, sizeof(C->filho->ID), stdin);  //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
+    fgets(C->filho->ID, sizeof(C->filho->ID), stdin);       //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
     C->filho->ID[strcspn(C->filho->ID, "\n")] = '\0';       //substitui o caractere de quebra de linha (\n) pelo caractere nulo (\0) na string filho.nome.  //evita possiveis problemas na string
     printf("Digite o nome: ");
     fgets(C->filho->nome, sizeof(C->filho->nome), stdin);
@@ -213,7 +213,7 @@ void Adiciona_conjugue          (casal *C){
     }  
 
     printf("Digite o ID: ");                //usando fgets para ter mais segurança e nao ocasionar em um overflow, fgets normalmente le uma linha inteira de uma só vez.
-    fgets(C->conjugue->ID, sizeof((C->conjugue->ID)), stdin); //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
+    fgets(C->conjugue->ID, sizeof((C->conjugue->ID)), stdin);   //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
     C->conjugue->ID[strcspn(C->conjugue->ID, "\n")] = '\0';     //substitui o caractere de quebra de linha (\n) pelo caractere nulo (\0) na string conjugue.nome.  //evita possiveis problemas na string
 
     printf("Digite o nome: ");

@@ -46,7 +46,7 @@ ficha doencas = {1000, 1001, 1002, 1003, 1004, 1005};   //iniciando a estrutura 
 typedef struct FILHO{                                                                               // 1 digito(sexo): 1 = homem / 0 = mulher.
                                                                                                  
     //informacoes basicas.                                                                          // 2 digito(estado): 1 = casado / 0 = solteiro.
-    char ID[7];
+    char ID[8];
     char nome[50];                                                                                  // 3 digito(idade): 0 = idade < 18 / 1 = 18 > idade < 80 / 2 = idade > 80.
     int idade;
     float peso;                                                                                     // 4-6 digito(pai)/7-9(mae): recebe o id do casal de cima.

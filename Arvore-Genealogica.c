@@ -59,7 +59,7 @@ typedef struct FILHO{                                                           
 
 typedef struct CONJUGUE{
     //informacoes basicas.
-    char ID[7];
+    char ID[8];
     char nome[50];
     int idade;
     float peso;

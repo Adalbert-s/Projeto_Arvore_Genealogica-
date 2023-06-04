@@ -26,6 +26,8 @@ Metodo de pesquisa em busca de informacoes do projeto: Bing AI */
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <unistd.h>
+
 
 //estrutura das doencas que essa pessoa pode ter.
 typedef struct Ficha_Tecnica{                                                      
@@ -88,7 +90,8 @@ typedef struct no {
 // funcoes para escrever e ler os dados dos integrantes em arquivos
 
 short int cria_pastas           (void);         //funcao para a criacao de pastas, tipo short int pois o short int ja é mais que o necessario para essa funcao.
-int escrever_arquivo(casal *C, char opcao);    //funcao para escrever as informacoes em um arquivo binario.
+int escrever_arquivo(casal *C, char opcao);     //funcao para escrever as informacoes em um arquivo binario.
+short int verificaPasta(const char* nomePasta);      
 //void ler_arquivo        (pessoa *P);           //funcao para ler os dados da pessoa.
 
 //funcoes de manipulacao da arvore.
@@ -134,14 +137,41 @@ short int cria_pastas               (void){
 
     int status;                                 //variavel de status, determina a condicao da criacao das pastas.
 
-    status = mkdir("./Mulheres");               //cria a pasta reservada aos arquivos das mulheres.
-    status = mkdir("./Homens");                 //cria a pasta reservada aos arquivos dos homens.
-    status = mkdir("./Registro");
+    if(!verificaPasta("./Mulheres")){
+        status = mkdir("./Mulheres");               //cria a pasta reservada aos arquivos das mulheres.
+        if(status == 0){
+            printf("Pasta criada com sucesso.\n");
+        }
+        else{
+            printf("Falha ao criar a pasta Mulheres.\n");
+        }
+    }
+    else{
+        printf("A pasta 'Mulheres' ja existe.\n");
+    }
 
-    if (status == 0)                            //a funcao mkdir retorna 0 se teve sucesso.
-      printf("Pasta criada com sucesso\n");
-     else                                       //normalmente a cada vez que reiniciar o programa e as pastas já estiverem crias, ele entrará nesse else.
-      printf("Falha ao criar pasta\n");         //eh possivel resolver isso de uma forma mais adequada, mas teria que incluir mais bibliotecas.
+    if(!verificaPasta("./Homens")){    
+        status = mkdir("./Homens");                 //cria a pasta reservada aos arquivos dos homens.
+            if(status == 0){
+                printf("Pasta 'Homens' criada com sucesso.\n");
+            }
+            else{
+                printf("Falha ao criar a pasta Homens.\n");
+            }
+    }
+    else{
+        printf("A pasta 'Homens' ja existe.\n");
+    }
+
+    if (!verificaPasta("./Registro")) {
+        status = mkdir("./Registro");
+        if (status == 0)
+            printf("Pasta 'Registro' criada com sucesso.\n");
+        else
+            printf("Falha ao criar a pasta 'Registro'.\n");
+    } else {
+        printf("A pasta 'Registro' ja existe.\n");
+    }
 
     return 1;
 }
@@ -357,4 +387,19 @@ int escrever_arquivo(casal *C, char opcao){
     return 1;
 }
 
+short int verificaPasta(const char* nomePasta) {
+    struct stat st;
+    if (stat(nomePasta, &st) == 0) {
+        if (S_ISDIR(st.st_mode)) {
+            // A pasta existe
+            return 1;
+        } else {
+            // O caminho existe, mas não é uma pasta
+            return 0;
+        }
+    } else {
+        // A pasta não existe
+        return 0;
+    }
+}
 

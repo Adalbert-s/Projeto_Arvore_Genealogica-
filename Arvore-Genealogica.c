@@ -89,10 +89,11 @@ typedef struct no {
 //funcoes de manipulacao de arquivos
 // funcoes para escrever e ler os dados dos integrantes em arquivos
 
-short int cria_pastas           (void);         //funcao para a criacao de pastas, tipo short int pois o short int ja é mais que o necessario para essa funcao.
-int escrever_arquivo(casal *C, char opcao);     //funcao para escrever as informacoes em um arquivo binario.
-short int verificaPasta(const char* nomePasta);      
-//void ler_arquivo        (pessoa *P);           //funcao para ler os dados da pessoa.
+short int   cria_pastas         (void);                     //funcao para a criacao de pastas, tipo short int pois o short int ja é mais que o necessario para essa funcao.
+int         escrever_arquivo    (casal *C, char opcao);     //funcao para escrever as informacoes em um arquivo binario.
+short int   verificaPasta       (const char* nomePasta);
+short int   existe_pessoa       (char nome_arquivo_registro);     
+void        ler_arquivo         (const char* nomePasta, char nome_arquivo_registro);            //funcao para ler os dados da pessoa.
 
 //funcoes de manipulacao da arvore.
 void cria(No **t);
@@ -103,7 +104,7 @@ int insere(No **t, int dado);
 short int   Adiciona_Pessoa     (casal *C);
 void        Adiciona_filho      (casal *C);            //funcao para adicionar as informacoes de um novo integrante,struct pessoa como parametro,passada com &(endereço)para que seja modificada e salva em arquivo.
 void        Adiciona_conjugue   (casal *C);
-int  Gera_ID                    (casal *C);            //funcao para adicionar um ID para a pessoa.
+int         Gera_ID             (casal *C);            //funcao para adicionar um ID para a pessoa.
 
 int main(void){
 
@@ -270,6 +271,24 @@ int escrever_arquivo(casal *C, char opcao){
 
     if(opcao == '1'){
 
+        // Salvar em arquivo na pasta "Registro"
+            
+        sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->filho->ID);
+
+        if(!existe_pessoa(nome_arquivo_registro)){
+            printf("Erro, Pessoa já cadrastada!\n");
+            return 0;
+            }
+
+        file = fopen(nome_arquivo_registro, "wb");
+
+        if (file == NULL) {
+            printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
+            return 0;
+        }
+        fwrite(&C->filho, sizeof(C->filho), 1, file);
+        fclose(file);
+
         if(C->filho->ID[0] == '1'){
 
             // Salvar em arquivo na pasta "Homens"
@@ -285,18 +304,6 @@ int escrever_arquivo(casal *C, char opcao){
 
             fclose(file);
 
-            // Salvar em arquivo na pasta "Registro"
-            sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->filho->ID);
-
-            file = fopen(nome_arquivo_registro, "wb");
-
-            if (file == NULL) {
-                printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
-                return 0;
-            }
-            fwrite(&C->filho, sizeof(C->filho), 1, file);
-            fclose(file);
-
         }
         else if(C->filho->ID[0] == '0'){
 
@@ -310,42 +317,19 @@ int escrever_arquivo(casal *C, char opcao){
             }
             fwrite(&C->filho, sizeof(C->filho), 1, file);
             fclose(file);
-
-            // Salvar em arquivo na pasta "Registro"
-
-            sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->filho->ID);
-
-            file = fopen(nome_arquivo_registro, "wb");
-
-            if (file == NULL) {
-                printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
-                return 0;
-            }
-            fwrite(&C->filho, sizeof(C->filho), 1, file);
-            fclose(file);
         }
     }
     else if(opcao == '2'){
 
-        if(C->conjugue->ID[0] == '1'){
-
-        // Salvar em arquivo na pasta "Homens"
-
-        sprintf(nome_arquivo, "./Homens/%s.bin", C->conjugue->ID);
-
-        file = fopen(nome_arquivo, "wb");
-
-        if (file == NULL) {
-            printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
-            return 0;
-        }
-
-        fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
-        fclose(file);
-
         // Salvar em arquivo na pasta "Registro"
 
         sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->conjugue->ID);
+
+            if(!existe_pessoa(nome_arquivo_registro)){
+                printf("Erro, Pessoa já cadrastada!\n");
+                return 0;
+            }
+
         file = fopen(nome_arquivo_registro, "wb");
         if (file == NULL) {
             printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
@@ -354,9 +338,25 @@ int escrever_arquivo(casal *C, char opcao){
         fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
         fclose(file);
 
+        if(C->conjugue->ID[0] == '1'){
+
+            // Salvar em arquivo na pasta "Homens"
+
+            sprintf(nome_arquivo, "./Homens/%s.bin", C->conjugue->ID);
+
+            file = fopen(nome_arquivo, "wb");
+
+            if (file == NULL) {
+                printf("Erro ao abrir o arquivo %s\n", nome_arquivo);
+                return 0;
+            }
+
+            fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
+            fclose(file);
+
         }
         else if(C->conjugue->ID[0] == '0'){
-
+    
             // Salvar em arquivo na pasta "Mulheres"
             sprintf(nome_arquivo, "./Mulheres/%s.bin", C->conjugue->ID);
 
@@ -369,25 +369,13 @@ int escrever_arquivo(casal *C, char opcao){
             fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
             fclose(file);
 
-            // Salvar em arquivo na pasta "Registro"
-
-            sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->conjugue->ID);
-
-            file = fopen(nome_arquivo_registro, "wb");
-
-            if (file == NULL) {
-                printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
-                return 0;
-            }
-            fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
-
-            fclose(file);
         }  
     }
     return 1;
 }
 
 short int verificaPasta(const char* nomePasta) {
+
     struct stat st;
     if (stat(nomePasta, &st) == 0) {
         if (S_ISDIR(st.st_mode)) {
@@ -403,3 +391,11 @@ short int verificaPasta(const char* nomePasta) {
     }
 }
 
+short int   existe_pessoa       (char nome_arquivo_registro); {
+
+}
+
+void ler_arquivo(const char* nomePasta, char nome_arquivo_registro){
+
+
+}

@@ -68,7 +68,7 @@ typedef struct CONJUGUE{
 }conjugue;
 
 //estrutura com as informacoes do casal.
-typedef struct casal{
+typedef struct Casal{
 
     char ID[8];                            //ID do casal vai ter 7 digitos(3 de cada pessoa, 1 de descendencia(ex: 000.000.0)).
     struct FILHO *filho;                   //descendecia: filho pertencente a arvore(1), conjugue(0). //(idade,descedencia(pai),nivel).
@@ -78,13 +78,41 @@ typedef struct casal{
 
 }casal;                                    //*pessoa[2] (estrutura casal recebe 2 pessoas(struct pessoa)).
 
-//estrutura de no da arvore.
+//estrutura da arvore em grafos.
+
+typedef struct noAdjacente {
+
+    int vertice;
+    struct noAdjacente *prox;
+
+} NoAdjacente;
+ 
+typedef struct ListaNoAdjacente{
+
+    int tam;
+    NoAdjacente *inicio;
+    NoAdjacente *fim;
+
+} ListaNoAdjacente;
+
+
 typedef struct no {
 
-    struct casal *casal;
-    struct no *esq;
-    struct no *dir;
-} No;
+    char ID_CASAL[8];
+    casal *casal;
+
+    ListaNoAdjacente nosAdjacentes;
+    struct no *prox;
+
+}No;
+
+typedef struct {
+
+    int tam;
+    No *inicio;
+    No *fim;
+
+} Grafo;
 
 //funcoes de manipulacao de arquivos
 // funcoes para escrever e ler os dados dos integrantes em arquivos
@@ -95,9 +123,9 @@ short int   verificaPasta       (const char* nomePasta);
 short int   existe_pessoa       (char nome_arquivo_registro);     
 void        ler_arquivo         (const char* nomePasta, char nome_arquivo_registro);            //funcao para ler os dados da pessoa.
 
-//funcoes de manipulacao da arvore.
-void cria(No **t);
-int insere(No **t, int dado);
+//funcoes de manipulacao do grafo.
+
+Grafo* criarGrafo();
 
 //funcoes complementares.
 
@@ -108,30 +136,21 @@ int         Gera_ID             (casal *C);            //funcao para adicionar u
 
 int main(void){
 
-    //criando a arvore genealogica.
-    No *arvoreGenealogica;
-    casal   C;
-    cria(&arvoreGenealogica);
-    
+    Grafo* meuGrafo = criarGrafo();                     //cria o grafo
+    casal   C;                                          //cria a struct casal
+
     cria_pastas();
+
+    // Verifica se a criação do grafo foi bem-sucedida
+
+    if (meuGrafo == NULL) {
+        printf("Falha ao criar o grafo.\n");
+        return 1;                                       // Termina o programa com código de erro
+    }
+    
     Adiciona_Pessoa(&C);
     
     printf("-----|ARVORE GENEALOGICA.|-----\n");
-}
-
-/*
-
-    Inicializo um no como nulo.
-
-    Essa funcao recebe ponteiro de ponteiro devido a necessitar setar o conteudo de uma variavel
-    ponteiro como nulo. Se nao for ponteiro de ponteiro, e fizermos um t = NULL, ela estara setando
-    a variavel "t" do ESCOPO DA FUNCAO "CRIA".
-
-*/
-
-void cria(No **t){
-
-    *t = NULL;
 }
 
 short int cria_pastas               (void){
@@ -391,7 +410,7 @@ short int verificaPasta(const char* nomePasta) {
     }
 }
 
-short int   existe_pessoa       (char nome_arquivo_registro); {
+short int   existe_pessoa       (char nome_arquivo_registro){
 
 }
 
@@ -399,3 +418,23 @@ void ler_arquivo(const char* nomePasta, char nome_arquivo_registro){
 
 
 }
+
+Grafo* criarGrafo() {
+                                                    
+    Grafo* grafo = (Grafo*)malloc(sizeof(Grafo));       // Aloca memória para a struct Grafo
+
+    if (grafo == NULL) {                                // Tratamento de erro, falha na alocação de memória                                
+        return NULL;
+    }
+    // Inicializa os campos do grafo
+
+    grafo->tam = 0;        // Tamanho inicial do grafo é zero
+    grafo->inicio = NULL;  // O ponteiro "inicio" é inicializado como NULL
+    grafo->fim = NULL;     // O ponteiro "fim" é inicializado como NULL
+    // Retorna o ponteiro para o grafo criado
+
+    return grafo;
+}
+
+
+

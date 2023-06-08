@@ -142,6 +142,7 @@ short int   Adiciona_Pessoa     (casal *C);
 void        Adiciona_filho      (casal *C);            //funcao para adicionar as informacoes de um novo integrante,struct pessoa como parametro,passada com &(endereço)para que seja modificada e salva em arquivo.
 void        Adiciona_conjugue   (casal *C);
 void        Adiciona_par        (casal *C);
+void        Adiciona_filho      (casal *C);
 int         Gera_ID             (casal *C);            //funcao para adicionar um ID para a pessoa.
 
 int main(void){
@@ -239,6 +240,7 @@ short int Adiciona_Pessoa       (casal *C){
         
         if(opcao[0] == '1'){
             Adiciona_filho(C);
+            Adiciona_par(C);
             break;
         }
         else if(opcao[0] == '2'){
@@ -332,11 +334,34 @@ void Adiciona_conjugue          (casal *C){
 }
 
 void        Adiciona_par        (casal *C){
+
+    char opcao[2];
+
+    if(C != NULL && C->filho != NULL && C->filho->idade >= 18){
+        printf("Essa pessoa e casada? \n");
+        fgets(opcao, sizeof(opcao), stdin);
+
+        if(opcao[0] == 's' || opcao[0] == 'S'){
+            printf("Por favor adicione essa pessoa: \n");
+            Adiciona_conjugue(&C);
+        }
+        else{
+            memset(C->conjugue->nome, 0, sizeof(C->conjugue->nome));
+            memset(C->conjugue->ID, 0, sizeof(C->conjugue->ID));
+            C->conjugue->idade = 0;
+            C->conjugue->peso = 0.0;
+        }
+    }
+}
+
+void        Adiciona_filho      (casal *C){
+    
 }
 
 int escrever_arquivo(casal *C, char opcao){
 
     FILE *file;
+    char op[2];
     char nome_arquivo[50];
     char nome_arquivo_registro[50];
 
@@ -351,10 +376,18 @@ int escrever_arquivo(casal *C, char opcao){
             printf("Erro, Pessoa ja cadrastada!\n");
             printf("Deseja fazer alterações nas informaçoes dessa pessoa?\n");
 
-            //.......................................//
+            fgets(op, sizeof(op), stdin);
+            if(op[0] == 's' || op[0] == 'S')
+               goto continuar; 
+
+            else
+                return 0;
+            
         }
         else
             printf("A pessoa nao esta registrada.\n");
+
+        continuar:
 
         file = fopen(nome_arquivo_registro, "wb");
 

@@ -75,8 +75,7 @@ typedef struct Casal{
     char ID[8];                            //ID do casal vai ter 7 digitos(3 de cada pessoa, 1 de descendencia(ex: 000.000.0)).
     struct FILHO *filho;                   //descendecia: filho pertencente a arvore(1), conjugue(0). //(idade,descedencia(pai),nivel).
     struct CONJUGUE *conjugue;
-
-    struct pessoa *prox;
+     struct Casal* herdeiro;
 
 }casal;                                    //*pessoa[2] (estrutura casal recebe 2 pessoas(struct pessoa)).
 
@@ -125,42 +124,48 @@ short int   existe_pessoa       (const char *nome_arquivo_registro);
 
 //funcoes de manipulacao do grafo.
 
-Grafo* criarGrafo();
-short int adicionarNo(Grafo* grafo, char ID_CASAL[8], casal *C);
-void criarConexao(Grafo* grafo, char ID_CASAL1[8], char ID_CASAL2[8]);
-void salvarGrafo(Grafo* grafo, const char* nomeArquivo);
+Grafo*      criarGrafo          ();
+short int   adicionarNo         (Grafo* grafo, char ID_CASAL[8], casal *C);
+void        criarConexao        (Grafo* grafo, char ID_CASAL1[8], char ID_CASAL2[8]);
+void        salvarGrafo         (Grafo* grafo, const char* nomeArquivo);
 
-No* encontrarNo(Grafo* grafo, char ID_CASAL[8]);
-void percorrerGrafo(Grafo* grafo, FILE* arquivo);
-void imprimirGrafo(Grafo* grafo);
+No*         encontrarNo         (Grafo* grafo, char ID_CASAL[8]);
+void        percorrerGrafo      (Grafo* grafo, FILE* arquivo);
+void        imprimirGrafo       (Grafo* grafo);
 
-NoAdjacente* criarNoAdjacente(No* no);
-void adicionarNoAdjacente(ListaNoAdjacente* lista, NoAdjacente* noAdjacente);
+NoAdjacente* criarNoAdjacente   (No* no);
+void        adicionarNoAdjacente(ListaNoAdjacente* lista, NoAdjacente* noAdjacente);
 
 //funcoes complementares.
 
 short int   Adiciona_Pessoa     (casal *C);
 void        Adiciona_filho      (casal *C);            //funcao para adicionar as informacoes de um novo integrante,struct pessoa como parametro,passada com &(endereço)para que seja modificada e salva em arquivo.
 void        Adiciona_conjugue   (casal *C);
+void        Adiciona_par        (casal *C);
 int         Gera_ID             (casal *C);            //funcao para adicionar um ID para a pessoa.
 
 int main(void){
 
-    Grafo* meuGrafo = criarGrafo();                     //cria o grafo
+    Grafo* arvore = criarGrafo();                     //cria o grafo
     casal   C;                                          //cria a struct casal
 
     cria_pastas();
 
     // Verifica se a criação do grafo foi bem-sucedida
 
-    if (meuGrafo == NULL) {
+    if (arvore == NULL) {
         printf("Falha ao criar o grafo.\n");
         return 1;                                       // Termina o programa com código de erro
     }
 
     Adiciona_Pessoa(&C);
+    char ID_CASAL[8] = "101101";
+    adicionarNo(arvore, ID_CASAL,&C);
     
     printf("-----|ARVORE GENEALOGICA.|-----\n");
+    salvarGrafo(arvore, "arvore");
+
+    return 0;
 }
 
 short int cria_pastas               (void){
@@ -222,6 +227,8 @@ short int cria_pastas               (void){
 short int Adiciona_Pessoa       (casal *C){
 
     char opcao[2];
+    char op[2];
+    char nome [8];
 
     do{
         printf("Quem voce deseja adicionar: filho(1) / conjugue(2)?\n");
@@ -235,11 +242,30 @@ short int Adiciona_Pessoa       (casal *C){
             break;
         }
         else if(opcao[0] == '2'){
-            Adiciona_conjugue(C);
+            printf("Digite o ID da pessoa com que essa é casada: \n");
+            fgets(nome, sizeof(nome), stdin);
+            printf("Procurando pessoa no sistema...\n");
+
+            if(existe_pessoa(nome)){
+                printf("Pessoa encontrada com sucesso...\n");
+                Adiciona_conjugue(C);
+                break;
+            }
+            else{
+                printf("Pessoa nao encontrada, deseja salvar? \n");
+                fgets(op, sizeof(op), stdin);
+                if(op[0] == 's' || op[0] == 'S'){
+                    Adiciona_filho(C);
+                    break;
+                }
+                else
+                printf("Certo, Saindo do programa...\n");
+                return 0;
+            }
             break;
         }
         else
-            printf("|ERRO! Opcao invalida.");
+            printf("| ERRO! Opcao invalida.");
 
     }while(1);
 
@@ -303,6 +329,9 @@ void Adiciona_conjugue          (casal *C){
     fgets(input_float, sizeof(input_float), stdin);
     C->conjugue->peso = strtof(input_float, NULL);    //strtof para transformar em float                      //essa função não recebe o argumento de base numerica.
 
+}
+
+void        Adiciona_par        (casal *C){
 }
 
 int escrever_arquivo(casal *C, char opcao){
@@ -485,7 +514,6 @@ short int adicionarNo(Grafo* grafo, char ID_CASAL[8], casal *C){
     }
     
     // Preenche os campos do novo nó
-
     strcpy(novoNo->ID_CASAL, ID_CASAL);
     novoNo->casal = C;
     novoNo->nosAdjacentes.tam = 0;
@@ -529,8 +557,14 @@ void criarConexao(Grafo* grafo, char ID_CASAL1[8], char ID_CASAL2[8]) {
 }
 
 void salvarGrafo(Grafo* grafo, const char* nomeArquivo) {
+    
+    // Criar o caminho completo para o arquivo
+    char caminhoCompleto[10]; // Tamanho arbitrário, ajuste conforme necessário
+    strcpy(caminhoCompleto, "Grafo/"); // Substitua "Grafo" pelo nome da pasta desejada
+    strcat(caminhoCompleto, nomeArquivo);
+    
     // Abrir o arquivo para escrita em modo binário
-    FILE* arquivo = fopen(nomeArquivo, "wb");
+    FILE* arquivo = fopen(caminhoCompleto, "wb");
     if (arquivo == NULL) {
         printf("Erro ao abrir o arquivo para escrita.\n");
         return;

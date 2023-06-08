@@ -27,6 +27,8 @@ Metodo de pesquisa em busca de informacoes do projeto: Bing AI */
 #include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
+
 
 
 //estrutura das doencas que essa pessoa pode ter.
@@ -81,10 +83,8 @@ typedef struct Casal{
 //estrutura da arvore em grafos.
 
 typedef struct noAdjacente {
-
-    int vertice;
-    struct noAdjacente *prox;
-
+    struct no* vertice; 
+    struct noAdjacente* prox;
 } NoAdjacente;
  
 typedef struct ListaNoAdjacente{
@@ -120,12 +120,22 @@ typedef struct {
 short int   cria_pastas         (void);                     //funcao para a criacao de pastas, tipo short int pois o short int ja é mais que o necessario para essa funcao.
 int         escrever_arquivo    (casal *C, char opcao);     //funcao para escrever as informacoes em um arquivo binario.
 short int   verificaPasta       (const char* nomePasta);
-short int   existe_pessoa       (char nome_arquivo_registro);     
-void        ler_arquivo         (const char* nomePasta, char nome_arquivo_registro);            //funcao para ler os dados da pessoa.
+short int   existe_pessoa       (const char *nome_arquivo_registro);     
+//void        ler_arquivo         (const char* nomePasta, char nome_arquivo_registro);            //funcao para ler os dados da pessoa.
 
 //funcoes de manipulacao do grafo.
 
 Grafo* criarGrafo();
+short int adicionarNo(Grafo* grafo, char ID_CASAL[8], casal *C);
+void criarConexao(Grafo* grafo, char ID_CASAL1[8], char ID_CASAL2[8]);
+void salvarGrafo(Grafo* grafo, const char* nomeArquivo);
+
+No* encontrarNo(Grafo* grafo, char ID_CASAL[8]);
+void percorrerGrafo(Grafo* grafo, FILE* arquivo);
+void imprimirGrafo(Grafo* grafo);
+
+NoAdjacente* criarNoAdjacente(No* no);
+void adicionarNoAdjacente(ListaNoAdjacente* lista, NoAdjacente* noAdjacente);
 
 //funcoes complementares.
 
@@ -147,7 +157,7 @@ int main(void){
         printf("Falha ao criar o grafo.\n");
         return 1;                                       // Termina o programa com código de erro
     }
-    
+
     Adiciona_Pessoa(&C);
     
     printf("-----|ARVORE GENEALOGICA.|-----\n");
@@ -160,10 +170,10 @@ short int cria_pastas               (void){
     if(!verificaPasta("./Mulheres")){
         status = mkdir("./Mulheres");               //cria a pasta reservada aos arquivos das mulheres.
         if(status == 0){
-            printf("Pasta criada com sucesso.\n");
+            printf("Pasta 'Mulheres' criada com sucesso.\n");
         }
         else{
-            printf("Falha ao criar a pasta Mulheres.\n");
+            printf("Falha ao criar a pasta 'Mulheres'.\n");
         }
     }
     else{
@@ -171,6 +181,7 @@ short int cria_pastas               (void){
     }
 
     if(!verificaPasta("./Homens")){    
+
         status = mkdir("./Homens");                 //cria a pasta reservada aos arquivos dos homens.
             if(status == 0){
                 printf("Pasta 'Homens' criada com sucesso.\n");
@@ -183,7 +194,8 @@ short int cria_pastas               (void){
         printf("A pasta 'Homens' ja existe.\n");
     }
 
-    if (!verificaPasta("./Registro")) {
+    if(!verificaPasta("./Registro")) {
+
         status = mkdir("./Registro");
         if (status == 0)
             printf("Pasta 'Registro' criada com sucesso.\n");
@@ -191,6 +203,17 @@ short int cria_pastas               (void){
             printf("Falha ao criar a pasta 'Registro'.\n");
     } else {
         printf("A pasta 'Registro' ja existe.\n");
+    }
+
+    if(!verificaPasta("./Grafo")) {
+
+        status = mkdir("./Grafo");
+        if (status == 0)
+            printf("Pasta 'Grafo' criada com sucesso.\n");
+        else
+            printf("Falha ao criar a pasta 'Grafo'.\n");
+    } else {
+        printf("A pasta 'Grafo' ja existe.\n");
     }
 
     return 1;
@@ -288,6 +311,7 @@ int escrever_arquivo(casal *C, char opcao){
     char nome_arquivo[50];
     char nome_arquivo_registro[50];
 
+
     if(opcao == '1'){
 
         // Salvar em arquivo na pasta "Registro"
@@ -295,9 +319,13 @@ int escrever_arquivo(casal *C, char opcao){
         sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->filho->ID);
 
         if(!existe_pessoa(nome_arquivo_registro)){
-            printf("Erro, Pessoa já cadrastada!\n");
-            return 0;
-            }
+            printf("Erro, Pessoa ja cadrastada!\n");
+            printf("Deseja fazer alterações nas informaçoes dessa pessoa?\n");
+
+            //.......................................//
+        }
+        else
+            printf("A pessoa nao esta registrada.\n");
 
         file = fopen(nome_arquivo_registro, "wb");
 
@@ -305,6 +333,7 @@ int escrever_arquivo(casal *C, char opcao){
             printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
             return 0;
         }
+
         fwrite(&C->filho, sizeof(C->filho), 1, file);
         fclose(file);
 
@@ -341,19 +370,23 @@ int escrever_arquivo(casal *C, char opcao){
     else if(opcao == '2'){
 
         // Salvar em arquivo na pasta "Registro"
-
+            
         sprintf(nome_arquivo_registro, "./Registro/%s.bin", C->conjugue->ID);
 
-            if(!existe_pessoa(nome_arquivo_registro)){
-                printf("Erro, Pessoa já cadrastada!\n");
-                return 0;
-            }
+        if(!existe_pessoa(nome_arquivo_registro)){
+            printf("Erro, Pessoa ja cadrastada!\n");
+            return 0;
+        }
+        else
+            printf("A pessoa nao esta registrada.\n");
 
         file = fopen(nome_arquivo_registro, "wb");
+
         if (file == NULL) {
             printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
             return 0;
         }
+
         fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
         fclose(file);
 
@@ -387,7 +420,6 @@ int escrever_arquivo(casal *C, char opcao){
             }
             fwrite(&C->conjugue, sizeof(C->conjugue), 1, file);
             fclose(file);
-
         }  
     }
     return 1;
@@ -410,14 +442,21 @@ short int verificaPasta(const char* nomePasta) {
     }
 }
 
-short int   existe_pessoa       (char nome_arquivo_registro){
+short int   existe_pessoa       (const char *nome_arquivo_registro){
 
+    FILE* arquivo = fopen(nome_arquivo_registro, "rb");
+
+    if (arquivo == NULL) {
+        // Arquivo não encontrado
+        return 1;
+    }
+
+    // Arquivo encontrado"
+    fclose(arquivo);
+    return 0;
 }
 
-void ler_arquivo(const char* nomePasta, char nome_arquivo_registro){
-
-
-}
+//void ler_arquivo(const char* nomePasta, char nome_arquivo_registro){}
 
 Grafo* criarGrafo() {
                                                     
@@ -436,5 +475,145 @@ Grafo* criarGrafo() {
     return grafo;
 }
 
+short int adicionarNo(Grafo* grafo, char ID_CASAL[8], casal *C){
 
+    // Cria um novo nó
+    No* novoNo = (No*)malloc(sizeof(No));
+    if (novoNo == NULL) {
+        printf("Falha ao criar o nó.\n");
+        return 1;  
+    }
+    
+    // Preenche os campos do novo nó
 
+    strcpy(novoNo->ID_CASAL, ID_CASAL);
+    novoNo->casal = C;
+    novoNo->nosAdjacentes.tam = 0;
+    novoNo->nosAdjacentes.inicio = NULL;
+    novoNo->nosAdjacentes.fim = NULL;
+    novoNo->prox = NULL;
+    
+    // Verifica se o grafo está vazio
+    if (grafo->inicio == NULL) {
+        grafo->inicio = novoNo;
+        grafo->fim = novoNo;
+    } else {
+        grafo->fim->prox = novoNo;
+        grafo->fim = novoNo;
+    }
+    
+    // Incrementa o tamanho do grafo
+    grafo->tam++;
+
+    return 0;
+}
+
+void criarConexao(Grafo* grafo, char ID_CASAL1[8], char ID_CASAL2[8]) {
+    // Encontrar os nós correspondentes aos IDs fornecidos
+    No* no1 = encontrarNo(grafo, ID_CASAL1);
+    No* no2 = encontrarNo(grafo, ID_CASAL2);
+
+    // Verificar se os nós foram encontrados
+    if (no1 == NULL || no2 == NULL) {
+        printf("Um ou ambos os nós não foram encontrados.\n");
+        return;  // Retornar ou tratar o erro conforme a necessidade do seu programa
+    }
+
+    // Criar os nós adjacentes
+    NoAdjacente* novoNoAdj1 = criarNoAdjacente(no2);
+    NoAdjacente* novoNoAdj2 = criarNoAdjacente(no1);
+
+    // Adicionar os nós adjacentes às respectivas listas de nós adjacentes
+    adicionarNoAdjacente(&no1->nosAdjacentes, novoNoAdj1);
+    adicionarNoAdjacente(&no2->nosAdjacentes, novoNoAdj2);
+}
+
+void salvarGrafo(Grafo* grafo, const char* nomeArquivo) {
+    // Abrir o arquivo para escrita em modo binário
+    FILE* arquivo = fopen(nomeArquivo, "wb");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo para escrita.\n");
+        return;
+    }
+    
+    // Criar uma estrutura de dados para salvar o grafo
+    Grafo grafoSalvo;
+    grafoSalvo.tam = grafo->tam;
+    grafoSalvo.inicio = grafo->inicio;
+    grafoSalvo.fim = grafo->fim;
+    
+    // Escrever a estrutura no arquivo
+    fwrite(&grafoSalvo, sizeof(Grafo), 1, arquivo);
+    
+    // Fechar o arquivo
+    fclose(arquivo);
+}
+
+No* encontrarNo(Grafo* grafo, char ID_CASAL[8]) {
+    No* atual = grafo->inicio;
+    while (atual != NULL) {
+        if (strcmp(atual->ID_CASAL, ID_CASAL) == 0) {
+            return atual;
+        }
+        atual = atual->prox;
+    }
+    return NULL;
+}
+
+void percorrerGrafo(Grafo* grafo, FILE* arquivo){
+
+    No* atual = grafo->inicio;
+
+    while (atual != NULL) {
+        printf("ID_CASAL: %s\n", atual->ID_CASAL);
+        printf("Casais adjacentes: ");
+        NoAdjacente* adjacente = atual->nosAdjacentes.inicio;
+        while (adjacente != NULL) {
+            fprintf(arquivo, "%s ", adjacente->vertice->ID_CASAL);
+            adjacente = adjacente->prox;
+        }
+        printf("\n\n");
+        atual = atual->prox;
+    }
+}
+
+void imprimirGrafo(Grafo* grafo) {
+    FILE* arquivo = fopen("arquivo.txt", "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+
+    No* atual = grafo->inicio;
+    while (atual != NULL) {
+        fprintf(arquivo, "ID_CASAL: %s\n", atual->ID_CASAL);
+        fprintf(arquivo, "Casais adjacentes: ");
+        NoAdjacente* adjacente = atual->nosAdjacentes.inicio;
+        while (adjacente != NULL) {
+            fprintf(arquivo, "%s ", adjacente->vertice->ID_CASAL);
+            adjacente = adjacente->prox;
+        }
+        fprintf(arquivo, "\n\n");
+        atual = atual->prox;
+    }
+
+    fclose(arquivo);
+}
+
+NoAdjacente* criarNoAdjacente(No* no) {
+    NoAdjacente* novoNoAdj = (NoAdjacente*)malloc(sizeof(NoAdjacente));
+    novoNoAdj->vertice = no;
+    novoNoAdj->prox = NULL;
+    return novoNoAdj;
+}
+
+void adicionarNoAdjacente(ListaNoAdjacente* lista, NoAdjacente* noAdjacente){
+    if (lista->inicio == NULL) {
+        lista->inicio = noAdjacente;
+        lista->fim = noAdjacente;
+    } else {
+        lista->fim->prox = noAdjacente;
+        lista->fim = noAdjacente;
+    }
+    lista->tam++;
+}

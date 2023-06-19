@@ -169,7 +169,7 @@ int main(void){
     return 0;
 }
 
-short int cria_pastas               (void){
+short int cria_pastas(void){
 
     int status;                                 //variavel de status, determina a condicao da criacao das pastas.
 
@@ -225,7 +225,7 @@ short int cria_pastas               (void){
     return 1;
 }
 
-short int Adiciona_Pessoa       (casal *C){
+short int Adiciona_Pessoa(casal *C){
 
     char opcao[2];
     char op[2];
@@ -276,7 +276,7 @@ short int Adiciona_Pessoa       (casal *C){
     return 1;
 }
 
-void Adiciona_filho             (casal *C){    
+void Adiciona_filho(casal *C){    
 
     C->filho = malloc(sizeof(filho)); // Aloca memória para a estrutura filho dentro de casal
     if (C->filho == NULL) {
@@ -304,7 +304,7 @@ void Adiciona_filho             (casal *C){
 
 }
 
-void Adiciona_conjugue          (casal *C){
+void Adiciona_conjugue(casal *C){
 
     C->conjugue = malloc(sizeof(conjugue)); // Aloca memória para a estrutura filho dentro de casal
     if (C->conjugue == NULL) {
@@ -333,7 +333,7 @@ void Adiciona_conjugue          (casal *C){
 
 }
 
-void        Adiciona_par        (casal *C){
+void Adiciona_par(casal *C){
 
     char opcao[2];
 
@@ -343,7 +343,7 @@ void        Adiciona_par        (casal *C){
 
         if(opcao[0] == 's' || opcao[0] == 'S'){
             printf("Por favor adicione essa pessoa: \n");
-            Adiciona_conjugue(&C);
+            Adiciona_conjugue(C);
         }
         else{
             memset(C->conjugue->nome, 0, sizeof(C->conjugue->nome));
@@ -352,10 +352,6 @@ void        Adiciona_par        (casal *C){
             C->conjugue->peso = 0.0;
         }
     }
-}
-
-void        Adiciona_filho      (casal *C){
-    
 }
 
 int escrever_arquivo(casal *C, char opcao){
@@ -684,3 +680,5 @@ void adicionarNoAdjacente(ListaNoAdjacente* lista, NoAdjacente* noAdjacente){
     }
     lista->tam++;
 }
+
+

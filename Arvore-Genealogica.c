@@ -685,3 +685,43 @@ void PreencheFicha(void *struct_ptr, int tipo) {
         }
     } while (c == 0);
 }
+
+/*coisa ainda para finalizar:
+
+funcao de caracteristicas fisicas: 
+
+-vai ser parecida, senão igual a da ficha tecnica, só tirar o if da pessoa saldavel e continuar as perguntas da mesma forma(com 0s, 1s ou outro valor)
+coloca uns 3 tipos de cor de cabelo, sendo o 3 como "outros" assim como olhos, pele. n precisa colocar altura pq vou colocar na struct de ficha tecnica
+
+
+-criar a função para mostrar,tanto a da ficha tecnica, quanto a de caracteristicas, essa função vai seguir a logica de apenas mostrar as coisas que a pessoa tem,
+com ifs fazendo uma logica de que se for 1 mostra ela e se for 0, n mostra, a parte de salvar em arquivo deixa comigo, só lembra de fazer com que a função não deixe 
+nenhum campo vazio, se n dá pau no arquivo, tem uma logica parecida na função "adiciona par", só olhar e vê que eu preencho com a palavra "desconhecido".
+
+funçao que cria ids:
+
+- função simples que vai colocar ids nas pessoas, só criar uma função void, com os parametros da struct casal(ela n está no main, está na função preenche filha)
+(lembra de colocar a struct com "&" na chamada da função), o sistema de id vai ser simples, primeira pessoa vai ser o 1  a segunda 2 ..., e preenche de 0s o resto 
+do char[0].
+
+funcao de menu:
+
+- função só para mostra o menu, o main não tem nd declarado, então poderia usar uma função menu tranquilo e só ficar ela lá, o menu vai ter as opcoes de cadrastar 
+pessoa, puxando a função de cadastrar(já feita), e a funcão de mostrar as pessoas salvas(puxando a outra função que tá lá), ao mostrar a pessoa, perguntar se ela
+deseja ver as informações da pessoa(perguntar se é o filho ou o conjugue) e mostrar a ficha tecnica dele, (basicamente printf de c->filho.ficha ou do conjugue)
+e por fim uma pergunta se ela deseja voltar para o menu 1(o que vai ter as opcoes de cadrastar, ver, sair do programa)
+
+corrigir bugs(deixa comigo essa parte):
+
+arrumar a leitura das informações
+warning da função adiciona par
+
+e por fim preciso implementar o ponteiro anterior da lista e a função de pastas
+e como vou ser um dos ultimos a terminar vou tentar criar funções sobre saude, que vai dar as chances do filho do casal ter isso ou aquilo...
+
+(nao esquecem de criar as tarefas no projeto, atribuir como issues e colocar vcs como responsaveis, e dps finalizar issues trazendo ela para o ultimo campo,
+pq se não o claudio n vê que foram vcs que fizeram e só fica eu como que fez mais de 10 tarefas lá)
+
+
+e por fim testa as funções pq mais tarde eu vou só finalizar meus bugs, adicionar alguma coisa ali ou aqui, e não vai dar para testar tudo.
+*/

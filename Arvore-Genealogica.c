@@ -133,7 +133,7 @@ int main(void){
 
     printf("-----|ARVORE GENEALOGICA.|-----\n");
     cria_pastas();
-    
+
 /*=========================================================================================================================*/
 
     cadastrarClientes();
@@ -409,7 +409,7 @@ void cadastrarClientes() {
     ListaLDE *inicio = NULL, *ponteiro;
     casal C;
     char tecla;
-    
+
     /* Cadastro */
     do {
         int opcao = Adiciona_Pessoa();
@@ -447,12 +447,12 @@ void cadastrarClientes() {
             ponteiro->casal = C;
             ponteiro->prox = NULL;
         }
-        
+
         printf("\nDeseja sair (S/N):\t");
         scanf("%c", &tecla);
         getchar();
     } while (toupper(tecla) != 'S');
-    
+
     /* Mostra a lista */
     ponteiro = inicio;
     while (ponteiro) {
@@ -462,13 +462,13 @@ void cadastrarClientes() {
         printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", ponteiro->casal.conjugue.nome,ponteiro->casal.conjugue.idade, ponteiro->casal.conjugue.peso);
         ponteiro = ponteiro->prox;
     }
-    
+
     /* Salva a lista em um arquivo */
     TCabecalho cab;
     if (salvar(inicio, ponteiro, cab) == -1) {
         printf("Erro ao salvar os dados.\n");
     }
-    
+
     /* Libera a memória */
     ponteiro = inicio;
     while (ponteiro) {
@@ -563,7 +563,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
     char r[4];
     casal *casal_ptr = struct_ptr;
     ficha *ficha_ptr;
-    
+
     if (tipo == 1) {
         ficha_ptr = &(casal_ptr->filho.ficha);
     } else if (tipo == 2) {
@@ -688,26 +688,26 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
 /*coisa ainda para finalizar:
 
-funcao de caracteristicas fisicas: 
+{funcao de caracteristicas fisicas:
 
 -vai ser parecida, senão igual a da ficha tecnica, só tirar o if da pessoa saldavel e continuar as perguntas da mesma forma(com 0s, 1s ou outro valor)
 coloca uns 3 tipos de cor de cabelo, sendo o 3 como "outros" assim como olhos, pele. n precisa colocar altura pq vou colocar na struct de ficha tecnica
-
+} Diogo
 
 -criar a função para mostrar,tanto a da ficha tecnica, quanto a de caracteristicas, essa função vai seguir a logica de apenas mostrar as coisas que a pessoa tem,
-com ifs fazendo uma logica de que se for 1 mostra ela e se for 0, n mostra, a parte de salvar em arquivo deixa comigo, só lembra de fazer com que a função não deixe 
+com ifs fazendo uma logica de que se for 1 mostra ela e se for 0, n mostra, a parte de salvar em arquivo deixa comigo, só lembra de fazer com que a função não deixe
 nenhum campo vazio, se n dá pau no arquivo, tem uma logica parecida na função "adiciona par", só olhar e vê que eu preencho com a palavra "desconhecido".
 
 funçao que cria ids:
 
 - função simples que vai colocar ids nas pessoas, só criar uma função void, com os parametros da struct casal(ela n está no main, está na função preenche filha)
-(lembra de colocar a struct com "&" na chamada da função), o sistema de id vai ser simples, primeira pessoa vai ser o 1  a segunda 2 ..., e preenche de 0s o resto 
-do char[0].(provavelmente vai precisar usar arquivo, então se não for ser eu que fazer, só faz o principio dela, deixa ela salvando os ids normalmente, que dps eu 
+(lembra de colocar a struct com "&" na chamada da função), o sistema de id vai ser simples, primeira pessoa vai ser o 1  a segunda 2 ..., e preenche de 0s o resto
+do char[0].(provavelmente vai precisar usar arquivo, então se não for ser eu que fazer, só faz o principio dela, deixa ela salvando os ids normalmente, que dps eu
 acho uma forma de salvar isso no arquivo.
 
 funcao de menu:
 
-- função só para mostra o menu, o main não tem nd declarado, então poderia usar uma função menu tranquilo e só ficar ela lá, o menu vai ter as opcoes de cadrastar 
+- função só para mostra o menu, o main não tem nd declarado, então poderia usar uma função menu tranquilo e só ficar ela lá, o menu vai ter as opcoes de cadrastar
 pessoa, puxando a função de cadastrar(já feita), e a funcão de mostrar as pessoas salvas(puxando a outra função que tá lá), ao mostrar a pessoa, perguntar se ela
 deseja ver as informações da pessoa(perguntar se é o filho ou o conjugue) e mostrar a ficha tecnica dele, (basicamente printf de c->filho.ficha ou do conjugue)
 e por fim uma pergunta se ela deseja voltar para o menu 1(o que vai ter as opcoes de cadrastar, ver, sair do programa)

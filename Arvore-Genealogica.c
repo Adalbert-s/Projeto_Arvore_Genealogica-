@@ -34,7 +34,7 @@ Metodo de pesquisa em busca de informacoes do projeto: Bing AI */
 #define NOME_ARQUIVO "dados.bin"
 
 //estrutura das doencas que essa pessoa pode ter.
-typedef struct Ficha_Tecnica{
+typedef struct FichaTecnica{
 
     int Saudavel;                                       //usuario saudavel(nao possui nenhuma doenca)
     //doencas hereditarias
@@ -60,7 +60,7 @@ typedef struct FILHO{                                                           
 
     //informacoes sobre suas doencas                                                                // 10 digito(nivel): definine onde que o casal esta na arvore.
 
-    struct Ficha_Tecnica ficha;               //array de ponteiros para apenas 1, ou seja cada pessoa so vai poder ter uma ficha tecnica.
+    struct FichaTecnica ficha;               //array de ponteiros para apenas 1, ou seja cada pessoa so vai poder ter uma ficha tecnica.
 
 }filho;
 
@@ -71,7 +71,7 @@ typedef struct CONJUGUE{
     char idade  [10];
     char peso   [10];
 
-    struct Ficha_Tecnica ficha;
+    struct FichaTecnica ficha;
 
 }conjugue;
 
@@ -127,22 +127,19 @@ void        Adiciona_conjugue   (casal *C);
 short int   Adiciona_par        (casal *C);
 void        Adiciona_filho      (casal *C);
 int         Gera_ID             (casal *C);            //funcao para adicionar um ID para a pessoa.
-//void PreencheFicha(casal *C);
+void PreencheFicha(void *struct_ptr, int tipo);
 
 int main(void){
 
+    printf("-----|ARVORE GENEALOGICA.|-----\n");
     cria_pastas();
     
 /*=========================================================================================================================*/
+
     cadastrarClientes();
     recuperarClientes();
 
-    printf("\nSalvando pessoa...\n");
-
-
 /*=========================================================================================================================*/
-
-    printf("-----|ARVORE GENEALOGICA.|-----\n");
 
     return 0;
 }
@@ -481,7 +478,6 @@ void cadastrarClientes() {
     }
 }
 
-
 void recuperarClientes() {
 
     TCabecalho cab;
@@ -525,7 +521,6 @@ void recuperarClientes() {
     free(C);
 }
 
-
 int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab) {
     FILE *arq;
     ListaLDE *p;
@@ -563,108 +558,130 @@ int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab) {
     return 0;
 }
 
-
-
-
-
-
-/*void PreencheFicha(casal *C){
+void PreencheFicha(void *struct_ptr, int tipo) {
     int c;
     char r[4];
-    printf("-----------Preenchendo ficha tecnica-----------");
-    do{
+    casal *casal_ptr = struct_ptr;
+    ficha *ficha_ptr;
+    
+    if (tipo == 1) {
+        ficha_ptr = &(casal_ptr->filho.ficha);
+    } else if (tipo == 2) {
+        ficha_ptr = &(casal_ptr->conjugue.ficha);
+    } else {
+        printf("Tipo inválido\n");
+        return;
+    }
+
+    do {
         c = 0;
-        printf("A pessoa tem Sindrome de Down? ");
-        gets(r);
-        for (int R = 0; R< strlen(r); R++){
+        printf("A pessoa é saudável? ");
+        fgets(r, sizeof(r), stdin);
+        r[strcspn(r, "\n")] = '\0'; // Remover o caractere '\n' do final da string
+        for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
-        if(r == 'SIM'){
-            C->filho.ficha.Sindrome_de_Down = 1;
+        if (strcmp(r, "SIM") == 0) {
+            ficha_ptr->Saudavel = 1;
             c = 1;
-        } if(r == 'NAO'){
-            C->filho.ficha.Saudavel = 1;
+        } else if (strcmp(r, "NAO") == 0) {
             c = 1;
         }
-    }while(c == 0);
+    } while (c == 0);
 
-    do{
+    do {
         c = 0;
-        printf("A pessoa tem Sindrome de Turner? ");
-        gets(r);
-        for (int R = 0; R< strlen(r); R++){
+        printf("A pessoa tem Síndrome de Down? ");
+        fgets(r, sizeof(r), stdin);
+        r[strcspn(r, "\n")] = '\0';
+        for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
-        if(r == 'SIM'){
-            C->filho.ficha.Sindrome_de_Turner = 1;
+        if (strcmp(r, "SIM") == 0) {
+            ficha_ptr->Sindrome_de_Down = 1;
             c = 1;
-        } if(r == 'NAO'){
-            C->filho.ficha.Saudavel = 1;
+        } else if (strcmp(r, "NAO") == 0) {
             c = 1;
         }
-    }while(c == 0);
+    } while (c == 0);
 
-    do{
+    do {
         c = 0;
-        printf("A pessoa tem Sindrome de Turner? ");
-        gets(r);
-        for (int R = 0; R< strlen(r); R++){
+        printf("A pessoa tem Síndrome de Turner? ");
+        fgets(r, sizeof(r), stdin);
+        r[strcspn(r, "\n")] = '\0';
+        for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
-        if(r == 'SIM'){
-            C->filho.ficha.Sindrome_de_Turner = 1;
+        if (strcmp(r, "SIM") == 0) {
+            ficha_ptr->Sindrome_de_Turner = 1;
             c = 1;
-        } if(r == 'NAO'){
-            C->filho.ficha.Saudavel = 1;
+        } else if (strcmp(r, "NAO") == 0) {
             c = 1;
         }
-    }while(c == 0);
+    } while (c == 0);
 
-    do{
+    do {
+        c = 0;
+        printf("A pessoa tem Hemofilia? ");
+        fgets(r, sizeof(r), stdin);
+        r[strcspn(r, "\n")] = '\0';
+        for (unsigned int R = 0; R < strlen(r); R++) {
+            r[R] = toupper(r[R]);
+        }
+        if (strcmp(r, "SIM") == 0) {
+            ficha_ptr->Hemofilia = 1;
+            c = 1;
+        } else if (strcmp(r, "NAO") == 0) {
+            c = 1;
+        }
+    } while (c == 0);
+
+    do {
         c = 0;
         printf("A pessoa tem Diabetes? ");
-        gets(r);
-        for (int R = 0; R< strlen(r); R++){
+        fgets(r, sizeof(r), stdin);
+        r[strcspn(r, "\n")] = '\0';
+        for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
-        if(r == 'SIM'){
-            C->filho.ficha.Diabetes = 1;
+        if (strcmp(r, "SIM") == 0) {
+            ficha_ptr->Diabetes = 1;
             c = 1;
-        } if(r == 'NAO'){
-            C->filho.ficha.Saudavel = 1;
+        } else if (strcmp(r, "NAO") == 0) {
             c = 1;
         }
-    }while(c == 0);
+    } while (c == 0);
 
-    do{
+    do {
         c = 0;
-        printf("A pessoa tem Doenca Cardiovascular? ");
-        gets(r);
-        for (int R = 0; R< strlen(r); R++){
+        printf("A pessoa tem Doença Cardiovascular? ");
+        fgets(r, sizeof(r), stdin);
+        r[strcspn(r, "\n")] = '\0';
+        for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
-        if(r == 'SIM'){
-            C->filho.ficha.Doenca_Cardiovascular = 1;
+        if (strcmp(r, "SIM") == 0) {
+            ficha_ptr->Doenca_Cardiovascular = 1;
             c = 1;
-        } if(r == 'NAO'){
-            C->filho.ficha.Saudavel = 1;
+        } else if (strcmp(r, "NAO") == 0) {
             c = 1;
         }
-    }while(c == 0);
+    } while (c == 0);
 
-    do{
+    do {
         c = 0;
-        printf("A pessoa tem Doenca de Huntington? ");
-        gets(r);
-        for (int R = 0; R< strlen(r); R++){
+        printf("A pessoa tem Doença de Huntington? ");
+        fgets(r, sizeof(r), stdin);
+        r[strcspn(r, "\n")] = '\0';
+        for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
-        if(r == 'SIM'){
-            C->filho.ficha.Doenca_de_Huntington = 1;
+        if (strcmp(r, "SIM") == 0) {
+            ficha_ptr->Doenca_de_Huntington = 1;
             c = 1;
-        } if(r == 'NAO'){
-            C->filho.ficha.Saudavel = 1;
+        } else if (strcmp(r, "NAO") == 0) {
             c = 1;
         }
-    }while(c == 0);
-}*/
+    } while (c == 0);
+}

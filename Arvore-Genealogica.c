@@ -702,7 +702,8 @@ funçao que cria ids:
 
 - função simples que vai colocar ids nas pessoas, só criar uma função void, com os parametros da struct casal(ela n está no main, está na função preenche filha)
 (lembra de colocar a struct com "&" na chamada da função), o sistema de id vai ser simples, primeira pessoa vai ser o 1  a segunda 2 ..., e preenche de 0s o resto 
-do char[0].
+do char[0].(provavelmente vai precisar usar arquivo, então se não for ser eu que fazer, só faz o principio dela, deixa ela salvando os ids normalmente, que dps eu 
+acho uma forma de salvar isso no arquivo.
 
 funcao de menu:
 

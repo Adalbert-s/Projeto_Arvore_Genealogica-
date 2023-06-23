@@ -51,7 +51,7 @@ typedef struct FichaTecnica{
 
 typedef struct CaracteristicasFisicas{
 
-    int Cor_do_Cabaelo;
+    int Cor_do_Cabelo;
     int Tipo_de_Cabelo;
 
     int Cor_da_Pele;
@@ -704,13 +704,13 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 void PreencheCaracteristicas(void *struct_ptr, int tipo) {
 
     casal *casal_ptr = struct_ptr;
-    ficha *ficha_ptr;
+    ficha *carac_ptr;
     int c1, c2, c3, t1, r1;
 
     if (tipo == 1) {
-        ficha_ptr = &(casal_ptr->filho.ficha);
+        carac_ptr = &(casal_ptr->filho.ficha);
     } else if (tipo == 2) {
-        ficha_ptr = &(casal_ptr->conjugue.ficha);
+        carac_ptr = &(casal_ptr->conjugue.ficha);
     } else {
         printf("Tipo inválido\n");
         return;
@@ -740,7 +740,10 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {
             default: printf("\nCor invalida...\n");
         }
     }while(r1 == 0);
-
+/*TA AQUI--------------------------------------*/
+    carac_ptr->Cor_do_Cabelo = r1;
+    
+/*---------------------------------------------*/
     do{
         printf("Qual o tipo de cabelo da pessoa?\nCacheado(1)\nLiso(2)\nOndulado(3)\nOutro(4)");
         scanf("%d", &t1);

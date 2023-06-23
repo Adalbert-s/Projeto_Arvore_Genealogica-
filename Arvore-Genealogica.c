@@ -49,6 +49,16 @@ typedef struct FichaTecnica{
 }ficha;                                                                                            //tabela de IDs:        doencas: 1000 - 1005
 //{1000, 1001, 1002, 1003, 1004, 1005};   //iniciando a estrutura com valores(IDs).
 
+typedef struct CaracteristicasFisicas{
+
+    int Cor_do_Cabaelo;
+    int Tipo_de_Cabelo;
+
+    int Cor_da_Pele;
+
+    int Cor_dos_Olhos;
+}caracfis;
+
 //estrutura com as informacoes de cada um dos 2.                                                    pessoas: formado por 10 digitos(exemplo: 000.000.000.0):
 typedef struct FILHO{                                                                               // 1 digito(sexo): 1 = homem / 0 = mulher.
 
@@ -61,6 +71,7 @@ typedef struct FILHO{                                                           
     //informacoes sobre suas doencas                                                                // 10 digito(nivel): definine onde que o casal esta na arvore.
 
     struct FichaTecnica ficha;               //array de ponteiros para apenas 1, ou seja cada pessoa so vai poder ter uma ficha tecnica.
+    struct CaracteristicasFisicas caracfis;
 
 }filho;
 
@@ -72,6 +83,7 @@ typedef struct CONJUGUE{
     char peso   [10];
 
     struct FichaTecnica ficha;
+    struct CaracteristicasFisicas caracfis;
 
 }conjugue;
 
@@ -128,6 +140,7 @@ short int   Adiciona_par        (casal *C);
 void        Adiciona_filho      (casal *C);
 int         Gera_ID             (casal *C);            //funcao para adicionar um ID para a pessoa.
 void PreencheFicha(void *struct_ptr, int tipo);
+void PreencheCaracteristicas(void *struct_ptr, int tipo);
 
 int main(void){
 
@@ -573,9 +586,10 @@ void PreencheFicha(void *struct_ptr, int tipo) {
         return;
     }
 
+    printf("\nPreenchimento da Ficha Tecnica\n");
     do {
         c = 0;
-        printf("A pessoa é saudável? ");
+        printf("\nA pessoa é saudável? ");
         fgets(r, sizeof(r), stdin);
         r[strcspn(r, "\n")] = '\0'; // Remover o caractere '\n' do final da string
         for (unsigned int R = 0; R < strlen(r); R++) {
@@ -584,6 +598,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
         if (strcmp(r, "SIM") == 0) {
             ficha_ptr->Saudavel = 1;
             c = 1;
+            return;
         } else if (strcmp(r, "NAO") == 0) {
             c = 1;
         }
@@ -591,7 +606,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
     do {
         c = 0;
-        printf("A pessoa tem Síndrome de Down? ");
+        printf("\nA pessoa tem Síndrome de Down? ");
         fgets(r, sizeof(r), stdin);
         r[strcspn(r, "\n")] = '\0';
         for (unsigned int R = 0; R < strlen(r); R++) {
@@ -607,7 +622,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
     do {
         c = 0;
-        printf("A pessoa tem Síndrome de Turner? ");
+        printf("\nA pessoa tem Síndrome de Turner? ");
         fgets(r, sizeof(r), stdin);
         r[strcspn(r, "\n")] = '\0';
         for (unsigned int R = 0; R < strlen(r); R++) {
@@ -623,7 +638,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
     do {
         c = 0;
-        printf("A pessoa tem Hemofilia? ");
+        printf("\nA pessoa tem Hemofilia? ");
         fgets(r, sizeof(r), stdin);
         r[strcspn(r, "\n")] = '\0';
         for (unsigned int R = 0; R < strlen(r); R++) {
@@ -639,7 +654,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
     do {
         c = 0;
-        printf("A pessoa tem Diabetes? ");
+        printf("\nA pessoa tem Diabetes? ");
         fgets(r, sizeof(r), stdin);
         r[strcspn(r, "\n")] = '\0';
         for (unsigned int R = 0; R < strlen(r); R++) {
@@ -655,7 +670,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
     do {
         c = 0;
-        printf("A pessoa tem Doença Cardiovascular? ");
+        printf("\nA pessoa tem Doença Cardiovascular? ");
         fgets(r, sizeof(r), stdin);
         r[strcspn(r, "\n")] = '\0';
         for (unsigned int R = 0; R < strlen(r); R++) {
@@ -671,7 +686,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
     do {
         c = 0;
-        printf("A pessoa tem Doença de Huntington? ");
+        printf("\nA pessoa tem Doença de Huntington? ");
         fgets(r, sizeof(r), stdin);
         r[strcspn(r, "\n")] = '\0';
         for (unsigned int R = 0; R < strlen(r); R++) {
@@ -686,6 +701,113 @@ void PreencheFicha(void *struct_ptr, int tipo) {
     } while (c == 0);
 }
 
+void PreencheCaracteristicas(void *struct_ptr, int tipo) {
+
+    casal *casal_ptr = struct_ptr;
+    ficha *ficha_ptr;
+    int c1, c2, c3, t1, r1;
+
+    if (tipo == 1) {
+        ficha_ptr = &(casal_ptr->filho.ficha);
+    } else if (tipo == 2) {
+        ficha_ptr = &(casal_ptr->conjugue.ficha);
+    } else {
+        printf("Tipo inválido\n");
+        return;
+    }
+
+    do{
+        printf("\nPreenchimento das Caracteristicas Fisicas\n");
+        printf("Qual a cor de cabelo da pessoa?\nCastanho(1)\nLoiro(2)\nPreto(3)\nRuivo(4)\nOutro(5)");
+        scanf("%d", &c1);
+        r1 = 0;
+        switch(c1){
+            case 1:
+                r1 = 1;
+                break;
+            case 2:
+                r1 = 1;
+                break;
+            case 3:
+                r1 = 1;
+                break;
+            case 4:
+                r1 = 1;
+                break;
+            case 5:
+                r1 = 1;
+                break;
+            default: printf("\nCor invalida...\n");
+        }
+    }while(r1 == 0);
+
+    do{
+        printf("Qual o tipo de cabelo da pessoa?\nCacheado(1)\nLiso(2)\nOndulado(3)\nOutro(4)");
+        scanf("%d", &t1);
+        r1 = 0;
+        switch(t1){
+            case 1:
+                r1 = 1;
+                break;
+            case 2:
+                r1 = 1;
+                break;
+            case 3:
+                r1 = 1;
+                break;
+            case 4:
+                r1 = 1;
+                break;
+            default: printf("\nTipo invalido...\n");
+        }
+    }while(r1 == 0);
+
+    do{
+        printf("Qual a cor da pele da pessoa?\nBranca(1)\nParda(2)\nPreta(3)\nOutra(4)");
+        scanf("%d", &c2);
+        r1 = 0;
+        switch(c2){
+            case 1:
+                r1 = 1;
+                break;
+            case 2:
+                r1 = 1;
+                break;
+            case 3:
+                r1 = 1;
+                break;
+            case 4:
+                r1 = 1;
+                break;
+            default: printf("\nCor invalida...\n");
+        }
+    }while(r1 == 0);
+
+    do{
+        printf("Qual a cor dos olhos da pessoa?\nAzul(1)\nCastanho(2)\nPreto(3)\nVerde(4)\nOutro(5)");
+        scanf("%d", &c3);
+        r1 = 0;
+        switch(c3){
+            case 1:
+                r1 = 1;
+                break;
+            case 2:
+                r1 = 1;
+                break;
+            case 3:
+                r1 = 1;
+                break;
+            case 4:
+                r1 = 1;
+                break;
+            case 5:
+                r1 = 1;
+                break;
+            default: printf("\nCor invalida...\n");
+        }
+    }while(r1 == 0);
+
+}
 /*coisa ainda para finalizar:
 
 {funcao de caracteristicas fisicas:

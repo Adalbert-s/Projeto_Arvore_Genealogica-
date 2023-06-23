@@ -26,10 +26,12 @@ Metodo de pesquisa em busca de informacoes do projeto: Bing AI */
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <dirent.h>
 
-#define vars "IF"
+#define id "IF"
+#define NOME_ARQUIVO "dados.bin"
 
 //estrutura das doencas que essa pessoa pode ter.
 typedef struct Ficha_Tecnica{
@@ -98,7 +100,7 @@ typedef struct no {
 
 typedef struct
 {
-  char id[3];
+  char ID[3];
   unsigned short q_registros;
 }TCabecalho;
 
@@ -113,17 +115,9 @@ short int   existe_pessoa       (const char *nome_arquivo_registro);
 
 //funcoes de manipulacao
 
-void cria(ListaLDE *inicio ,ListaLDE *ponteiro, casal *C);
-int insere(ListaLDE *l, casal *C, const char* caminho);
-int retira(ListaLDE *l, char ID);
-
-//funcoes de visualizacao
-
-int estaVazia(ListaLDE l);
-int getTamanho(ListaLDE l);
-int mostra(ListaLDE);
-int verifica(ListaLDE l, casal *C, char* ID);
-void lerArquivoBinario(const char* nome_arquivo);
+int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab);
+void cadastrarClientes();
+void recuperarClientes();
 
 //funcoes complementares.
 
@@ -133,133 +127,22 @@ void        Adiciona_conjugue   (casal *C);
 short int   Adiciona_par        (casal *C);
 void        Adiciona_filho      (casal *C);
 int         Gera_ID             (casal *C);            //funcao para adicionar um ID para a pessoa.
-//void PreencheFicha(ficha *c);
+//void PreencheFicha(casal *C);
 
 int main(void){
 
-    ListaLDE *inicio = NULL, *ponteiro;
-
-    casal *C = NULL;
-    TCabecalho cab;
-
     cria_pastas();
+    
 /*=========================================================================================================================*/
+    cadastrarClientes();
+    recuperarClientes();
 
-    FILE *file;
-    char arquivo[50] = "Dados.bin";
-
-    file = fopen(arquivo, "w+");
-
-    if(!file){
-
-        casal  C;
-
-        file=fopen(arquivo,"wb+");
-
-        if(Adiciona_Pessoa() == 1){
-
-            Adiciona_filho(&C);
-            if(Adiciona_par(&C)){
-                Adiciona_conjugue(&C);
-            }
-
-        }else if(Adiciona_Pessoa() == 2){
-
-            Adiciona_conjugue(&C);
-
-        }else if(Adiciona_Pessoa() == 3){
-
-            Adiciona_filho(&C);
-
-        }
-        if(!inicio){
-            ponteiro = inicio= malloc(sizeof(ListaLDE));
-            if(!inicio)   /* Erro */
-            return(-1);
-            inicio->casal = C;
-            inicio->prox = NULL;
-        }
-        else
-        {
-            ponteiro=ponteiro->prox = malloc(sizeof(ListaLDE));
-            if(!ponteiro)   /* Erro */
-                return(-1);
-            ponteiro->casal = C;
-            ponteiro->prox =NULL;
-      }
-}
-       // cria(&inicio,&ponteiro, &C);
-        printf("Salvando pessoa...\n");
+    printf("\nSalvando pessoa...\n");
 
 
 /*=========================================================================================================================*/
 
     printf("-----|ARVORE GENEALOGICA.|-----\n");
-    int cont=0;
-
-     /* Mostra a lista */
-    ponteiro=inicio;
-    while(ponteiro){
-
-    printf("\nFILHO:   \n\nID: \t%s\nNome:\t%s\nIdade:\t%s\nPeso:\t%s",C->filho.ID,C->filho.nome, C->filho.idade, C->filho.peso);
-    printf("\nCONJUGUE:\n\nID: \t%s\nNome:\t%s\nIdade:\t%s\nPeso:\t%s",C->conjugue.ID,C->conjugue.nome, C->conjugue.idade, C->conjugue.peso);
-
-      ponteiro=ponteiro->prox;
-      cont++;   /* Conta a quantidade de registros */
-    }
-    /* Salva a lista em um arquivo */
-    strcpy(cab.id, vars);
-    cab.q_registros=cont;
-    /* Primeiro registro do arquivo */
-    fwrite(&cab,sizeof(TCabecalho),1,file);
-    ponteiro=inicio;
-    while(ponteiro)
-    {
-      fwrite(&ponteiro->casal,sizeof(ListaLDE),1,file);
-      ponteiro=ponteiro->prox;
-    }
-    /* Passa para um vetor */
-    C = malloc(sizeof(ListaLDE)*cont);
-
-    if(!C) /* Erro */
-      return(-1);
-    /* Passa a lista para o vetor */
-    cont=0;
-    ponteiro=inicio;
-    while(ponteiro)
-    {
-      C[cont]=ponteiro->casal;
-      ponteiro=ponteiro->prox;
-    }
-    /* Apaga a lista */
-    ponteiro=inicio;
-    while(ponteiro)
-    {
-      inicio=ponteiro->prox;
-      free(ponteiro);
-      ponteiro=inicio;
-    }
-
-  /* Recupera os regitros do arquivo */
-  if(!C)
-  {
-    fread(&cab,sizeof(TCabecalho),1,file);
-    if(strcmp(cab.id,vars))   /* Erro */
-      return(-1);
-    C =malloc(sizeof(ListaLDE)*cab.q_registros);
-
-    if(!C)   /* Erro */
-      return(-1);
-    for(cont=0; cont<cab.q_registros; cont++)
-      fread(&C[cont],sizeof(ListaLDE),1,file);
-  }
-  for(cont=0; cont<cab.q_registros; cont++)
-    printf("\nFILHO:   \n\nID: \t%s\nNome:\t%s\nIdade:\t%s\nPeso:\t%s",C[cont].filho.ID,C[cont].filho.nome, C[cont].filho.idade, C[cont].filho.peso);
-    printf("\nCONJUGUE:\n\nID: \t%s\nNome:\t%s\nIdade:\t%s\nPeso:\t%s",C[cont].conjugue.ID,C[cont].conjugue.nome, C[cont].conjugue.idade, C[cont].conjugue.peso);
-  /* Apaga o vetor */
-  free(C);
-  /* Fecha o fileuivo */
-  fclose(file);
 
     return 0;
 }
@@ -407,7 +290,7 @@ short int Adiciona_par(casal *C){
 
 int escrever_arquivo(casal *C) {
     FILE *file;
-    char nome_arquivo_registro[50];
+    char nome_arquivo_registro[50] = "dados";
 
 
     file = fopen(nome_arquivo_registro, "w+");
@@ -494,7 +377,6 @@ fprintf(file, "%s %s %s %f\n", C->conjugue.ID, C->conjugue.nome, C->conjugue.ida
     return 1;
 }
 
-
 short int verificaPasta(const char* nomePasta) {
 
     struct stat st;
@@ -526,7 +408,167 @@ short int existe_pessoa(const char *nome_arquivo_registro){
     return 0;
 }
 
-/*void PreencheFicha(ficha){
+void cadastrarClientes() {
+    ListaLDE *inicio = NULL, *ponteiro;
+    casal C;
+    char tecla;
+    
+    /* Cadastro */
+    do {
+        int opcao = Adiciona_Pessoa();
+
+        if(opcao== 1){
+            Adiciona_filho(&C);
+
+            if(Adiciona_par(&C)){
+                Adiciona_conjugue(&C);
+        }
+        }else if(opcao == 2){
+            Adiciona_conjugue(&C);
+
+        }else if(opcao == 3){
+            Adiciona_filho(&C);
+
+    }
+        fflush(stdin);
+
+        /* Cria uma lista encadeada */
+        if (!inicio) {
+            ponteiro = inicio = malloc(sizeof(ListaLDE));
+            if (!inicio) {
+                printf("Erro ao alocar memória.\n");
+                return;
+            }
+            inicio->casal = C;
+            inicio->prox = NULL;
+        } else {
+            ponteiro = ponteiro->prox = malloc(sizeof(ListaLDE));
+            if (!ponteiro) {
+                printf("Erro ao alocar memória.\n");
+                return;
+            }
+            ponteiro->casal = C;
+            ponteiro->prox = NULL;
+        }
+        
+        printf("\nDeseja sair (S/N):\t");
+        scanf("%c", &tecla);
+        getchar();
+    } while (toupper(tecla) != 'S');
+    
+    /* Mostra a lista */
+    ponteiro = inicio;
+    while (ponteiro) {
+        printf("\nFILHO:");
+        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", ponteiro->casal.filho.nome, ponteiro->casal.filho.idade, ponteiro->casal.filho.peso);
+        printf("\nCONJUGUE:");
+        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", ponteiro->casal.conjugue.nome,ponteiro->casal.conjugue.idade, ponteiro->casal.conjugue.peso);
+        ponteiro = ponteiro->prox;
+    }
+    
+    /* Salva a lista em um arquivo */
+    TCabecalho cab;
+    if (salvar(inicio, ponteiro, cab) == -1) {
+        printf("Erro ao salvar os dados.\n");
+    }
+    
+    /* Libera a memória */
+    ponteiro = inicio;
+    while (ponteiro) {
+        inicio = ponteiro->prox;
+        free(ponteiro);
+        ponteiro = inicio;
+    }
+}
+
+
+void recuperarClientes() {
+
+    TCabecalho cab;
+    FILE* file;
+    casal* C = NULL;
+    int cont;
+
+    file = fopen(NOME_ARQUIVO, "rb");
+    if (!file) {
+        printf("Arquivo não encontrado.\n");
+        return;
+    }
+
+    fread(&cab, sizeof(TCabecalho), 1, file);
+    if (strcmp(cab.ID, id) != 0) {
+        printf("Arquivo inválido.\n");
+        fclose(file);
+        return;
+    }
+
+    C = malloc(sizeof(casal) * cab.q_registros);
+    if (!C) {
+        printf("Erro ao alocar memória.\n");
+        fclose(file);
+        return;
+    }
+
+    for (cont = 0; cont < cab.q_registros; cont++) {
+        fread(&C[cont], sizeof(casal), 1, file);
+    }
+
+    fclose(file);
+
+    for (cont = 0; cont < cab.q_registros; cont++) {
+        printf("\nFILHO:");
+        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", C[cont].filho.nome, C[cont].filho.idade, C[cont].filho.peso);
+        printf("\nCONJUGUE:");
+        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", C[cont].conjugue.nome, C[cont].conjugue.idade, C[cont].conjugue.peso);
+    }
+
+    free(C);
+}
+
+
+int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab) {
+    FILE *arq;
+    ListaLDE *p;
+
+    /* Abre o arquivo */
+    arq = fopen(NOME_ARQUIVO, "wb+");
+    if (!arq) {
+        printf("Erro ao abrir o arquivo.\n");
+        return -1;
+    }
+
+    /* Salva a lista em um arquivo */
+    strcpy(cab.ID, id);
+    cab.q_registros = 0;
+
+    /* Conta a quantidade de registros */
+    p = inicio;
+    while (p) {
+        cab.q_registros++;
+        p = p->prox;
+    }
+
+    /* Primeiro registro do arquivo */
+    fwrite(&cab, sizeof(TCabecalho), 1, arq);
+
+    /* Escreve os registros no arquivo */
+    ponteiro = inicio;
+    while (ponteiro) {
+        fwrite(&ponteiro->casal, sizeof(casal), 1, arq);
+        ponteiro = ponteiro->prox;
+    }
+
+    /* Fecha o arquivo */
+    fclose(arq);
+    return 0;
+}
+
+
+
+
+
+
+/*void PreencheFicha(casal *C){
     int c;
     char r[4];
     printf("-----------Preenchendo ficha tecnica-----------");

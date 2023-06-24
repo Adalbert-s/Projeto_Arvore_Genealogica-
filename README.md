@@ -73,7 +73,7 @@ Versão do compilador 20,03.
 
 Fontes de Referência
 ---------------------------------------------------------------------------
--Estruturas de dado Arvore:  https://www.freecodecamp.org/portuguese/news/tudo-o-que-voce-precisa-saber-sobre-estruturas-de-dados-em-arvore/amp/
+-Estruturas de dado arvore:  https://www.freecodecamp.org/portuguese/news/tudo-o-que-voce-precisa-saber-sobre-estruturas-de-dados-em-arvore/amp/
 
 -Varredura infixa e pos fixa de uma arvore binaria: https://www.ime.usp.br/~pf/algoritmos/aulas/bint.html
 
@@ -85,4 +85,4 @@ Fontes de Referência
 
 -Metodo de pesquisa em busca de informacoes do projeto: Bing AI 
 
--Busca para resolução de Warning: https://stackoverflow.com/questions/45129741/gcc-7-wimplicit-fallthrough-warnings-and-portable-way-to-clear-them
+-Busca para resolução de warning: https://stackoverflow.com/questions/45129741/gcc-7-wimplicit-fallthrough-warnings-and-portable-way-to-clear-them

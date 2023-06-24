@@ -84,3 +84,5 @@ Fontes de Referência
 -Manipulacao de arquivos e ideias de projeto: https://chat.openai.com/
 
 -Metodo de pesquisa em busca de informacoes do projeto: Bing AI 
+
+-Busca para resolução de Warning: https://stackoverflow.com/questions/45129741/gcc-7-wimplicit-fallthrough-warnings-and-portable-way-to-clear-them

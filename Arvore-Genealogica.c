@@ -143,9 +143,9 @@ void PreencheFicha(void *struct_ptr, int tipo);
 void PreencheCaracteristicas(void *struct_ptr, int tipo);
 
 int main(void){
-    int opcao;
+    int opcao;                                              // Variavel para Escolha das opçoes do menu
 
-    do{
+    do{                                                     // Menu de interação criado para usabilidade dos usuarios 
     printf("-----|ARVORE GENEALOGICA.|-----\n");
     printf("Digite a opcao desejada. \n");
     printf("1. Cadastrar Pessoa.\n");
@@ -166,7 +166,7 @@ int main(void){
             printf("Opcao invalida. Tente novamente.\n");
             break;
     }
-} while (opcao != 0);
+} while (opcao != 0);                                           // Condição de parada utlizada caso a pessoa escolha Sair
     return 0;
 
 
@@ -225,14 +225,14 @@ short int Adiciona_Pessoa(){
         printf("opcao: %d\n",opcao);
 
         if(opcao == 1){
-            break;
+            break;                      // Sai do loop se a opção for 1 (filho)
         }
         else if(opcao == 2){
             printf("Digite o ID da pessoa com que essa é casada: \n");
-            fgets(nome, sizeof(nome), stdin);
+            fgets(nome, sizeof(nome), stdin);                                   // Lê o ID da pessoa com que esta é casada a partir da entrada padrão
             printf("Procurando pessoa no sistema...\n");
 
-            if(existe_pessoa(nome)){
+            if(existe_pessoa(nome)){                                            // Verifica se a pessoa com o ID fornecido já existe no sistema
                 printf("Pessoa encontrada com sucesso...\n");
                 opcao = 2;
                 break;
@@ -255,7 +255,7 @@ short int Adiciona_Pessoa(){
 
     }while(1);
 
-    return opcao;
+    return opcao;                                                            // Retorna a opção escolhida pelo usuário
 }
 
 void Adiciona_filho(casal *C){
@@ -304,23 +304,23 @@ void Adiciona_conjugue(casal *C){
 short int Adiciona_par(casal *C){
 
     char opcao[5];
-    if(C != NULL && C->filho.idade != NULL && C->filho.idade >= 18){
+    if(C != NULL && C->filho.idade != NULL && C->filho.idade >= 18){                                     // Verifica se o casal existe e se o filho tem idade maior ou igual a 18
         printf("Essa pessoa e casada? \n");
         fgets(opcao, sizeof(opcao), stdin);
 
         if(opcao[0] == 's' || opcao[0] == 'S'){
             printf("Por favor adicione essa pessoa: \n");
-            return 1;
+            return 1;                                                   // Retorna 1 para indicar que a pessoa deve ser adicionada
         }
         else{
-            char desconhecido[20] = "desconhecido";
+            char desconhecido[20] = "desconhecido";                                 // Define os valores "desconhecido" para o ID, nome, idade e peso do cônjuge
             strcpy(C->conjugue.ID, desconhecido);
             strcpy(C->conjugue.nome, desconhecido);
             strcpy(C->conjugue.idade, desconhecido);
             strcpy(C->conjugue.peso, desconhecido);
         }
     }
-    return 0;
+    return 0;                                                           // Retorna 0 para indicar que nenhuma ação adicional é necessária
 }
 
 int escrever_arquivo(casal *C) {
@@ -328,17 +328,16 @@ int escrever_arquivo(casal *C) {
     char nome_arquivo_registro[50] = "dados";
 
 
-    file = fopen(nome_arquivo_registro, "w+");
+    file = fopen(nome_arquivo_registro, "w+");                      // Abre o arquivo para escrita e leitura (cria o arquivo se não existir)
 
-    if (file == NULL) {
+    if (file == NULL) {                                                 // Verifica se houve um erro ao abrir o arquivo
         printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
-        return 0;
+        return 0;                                                           // Retorna 0 para indicar que houve um erro ao abrir o arquivo
     }
 
     printf("Digite o ID do filho: ");
-    fgets(C->filho.ID, sizeof(C->filho.ID) - 1, stdin);
+    fgets(C->filho.ID, sizeof(C->filho.ID) - 1, stdin);                     //utiliza a função fgets para ler uma linha de entrada a partir do fluxo de entrada padrão (stdin) e armazena essa linha no campo ID da estrutura filho.   //O tamanho máximo da string lida é limitado pelo valor sizeof(C->filho.ID) - 1 para evitar o estouro de buffer.
     C->filho.ID[strcspn(C->filho.ID, "\n")] = '\0';
-
     printf("ID:%s\n", C->filho.ID);
 
     printf("Digite o nome: ");

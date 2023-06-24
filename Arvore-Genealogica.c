@@ -162,6 +162,7 @@ int main(void){
             break;
         case 0:
             printf("Saindo...\n");
+            break;
         default:
             printf("Opcao invalida. Tente novamente.\n");
             break;
@@ -834,6 +835,8 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No iníc
             default: printf("\nCor invalida...\n");
         }
     }while(r1 == 0);
+
+
 
 }
 /*coisa ainda para finalizar:

@@ -145,7 +145,7 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo);
 int main(void){
     int opcao;                                              // Variavel para Escolha das opçoes do menu
 
-    do{                                                     // Menu de interação criado para usabilidade dos usuarios
+    do{                                                     // Menu de interação criado para usabilidade dos usuarios 
     printf("-----|ARVORE GENEALOGICA.|-----\n");
     printf("Digite a opcao desejada. \n");
     printf("1. Cadastrar Pessoa.\n");
@@ -162,6 +162,7 @@ int main(void){
             break;
         case 0:
             printf("Saindo...\n");
+            break;
         default:
             printf("Opcao invalida. Tente novamente.\n");
             break;
@@ -228,7 +229,7 @@ short int Adiciona_Pessoa(){
             break;                      // Sai do loop se a opção for 1 (filho)
         }
         else if(opcao == 2){
-            printf("Digite o ID da pessoa com que essa é casada: \n");
+            printf("Digite o ID da pessoa com que essa e casada: \n");
             fgets(nome, sizeof(nome), stdin);                                   // Lê o ID da pessoa com que esta é casada a partir da entrada padrão
             printf("Procurando pessoa no sistema...\n");
 
@@ -304,7 +305,7 @@ void Adiciona_conjugue(casal *C){
 short int Adiciona_par(casal *C){
 
     char opcao[5];
-    if(C != NULL && C->filho.idade != NULL && C->filho.idade >= 18){                                     // Verifica se o casal existe e se o filho tem idade maior ou igual a 18
+    if (C != NULL && C->filho.idade != NULL && *(C->filho.idade) >= 18){                                     // Verifica se o casal existe e se o filho tem idade maior ou igual a 18
         printf("Essa pessoa e casada? \n");
         fgets(opcao, sizeof(opcao), stdin);
 
@@ -405,7 +406,7 @@ fprintf(file, "%s %s %s %f\n", C->filho.ID, C->filho.nome, C->filho.idade, C->fi
 fprintf(file, "%s %s %s %f\n", C->conjugue.ID, C->conjugue.nome, C->conjugue.idade, C->conjugue.peso);*/
 
 
-    fwrite(&C, sizeof(casal), 1, file);                                                                 //A função fwrite é utilizada para escrever os dados do objeto C no arquivo especificado pelo ponteiro file. O primeiro argumento &C representa o endereço de memória onde estão armazenados os dados do objeto
+    fwrite(&C, sizeof(casal), 1, file);                                                                 //A função fwrite é utilizada para escrever os dados do objeto C no arquivo especificado pelo ponteiro file. O primeiro argumento &C representa o endereço de memória onde estão armazenados os dados do objeto 
     fclose(file);
 
     return 1;
@@ -615,7 +616,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {                                
         c = 0;
         printf("\nA pessoa é saudável? ");
         fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';                                                                 // Remover o caractere '\n' do final da string
+        r[strcspn(r, "\n")] = '\0';                                                     // Remover o caractere '\n' do final da string
         for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
@@ -729,7 +730,7 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No iníc
                                                                       // O ponteiro casal_ptr é atribuído ao endereço de memória da estrutura correspondente
 
     casal *casal_ptr = struct_ptr;
-    caracfis *carac_ptr;
+    ficha *carac_ptr;
     int c1, c2, c3, t1, r1;
 
     if (tipo == 1) {
@@ -748,48 +749,42 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No iníc
         r1 = 0;
         switch(c1){
             case 1:
-                carac_ptr->Cor_do_Cabelo = 1;
                 r1 = 1;
                 break;
             case 2:
-                carac_ptr->Cor_do_Cabelo = 2;
                 r1 = 1;
                 break;
             case 3:
-                carac_ptr->Cor_do_Cabelo = 3;
                 r1 = 1;
                 break;
             case 4:
-                carac_ptr->Cor_do_Cabelo = 4;
                 r1 = 1;
                 break;
             case 5:
-                carac_ptr->Cor_do_Cabelo = 5;
                 r1 = 1;
                 break;
             default: printf("\nCor invalida...\n");                           //Após isso, é feita uma verificação utilizando um switch-case. Se o valor de c1 corresponder a um dos casos válidos (1 a 5)
         }
     }while(r1 == 0);
-
+/*TA AQUI--------------------------------------*/
+   // carac_ptr->Cor_do_Cabelo = r1;
+    
+/*---------------------------------------------*/
     do{
         printf("Qual o tipo de cabelo da pessoa?\nCacheado(1)\nLiso(2)\nOndulado(3)\nOutro(4)");
         scanf("%d", &t1);
         r1 = 0;
         switch(t1){
             case 1:
-                carac_ptr->Tipo_de_Cabelo = 1;
                 r1 = 1;
                 break;
             case 2:
-                carac_ptr->Tipo_de_Cabelo = 2;
                 r1 = 1;
                 break;
             case 3:
-                carac_ptr->Tipo_de_Cabelo = 3;
                 r1 = 1;
                 break;
             case 4:
-                carac_ptr->Tipo_de_Cabelo = 4;
                 r1 = 1;
                 break;
             default: printf("\nTipo invalido...\n");
@@ -802,19 +797,15 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No iníc
         r1 = 0;
         switch(c2){
             case 1:
-                carac_ptr->Cor_da_Pele = 1;
                 r1 = 1;
                 break;
             case 2:
-                carac_ptr->Cor_da_Pele = 2;
                 r1 = 1;
                 break;
             case 3:
-                carac_ptr->Cor_da_Pele = 3;
                 r1 = 1;
                 break;
             case 4:
-                carac_ptr->Cor_da_Pele = 4;
                 r1 = 1;
                 break;
             default: printf("\nCor invalida...\n");
@@ -827,23 +818,18 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No iníc
         r1 = 0;
         switch(c3){
             case 1:
-                carac_ptr->Cor_dos_Olhos = 1;
                 r1 = 1;
                 break;
             case 2:
-                carac_ptr->Cor_dos_Olhos = 2;
                 r1 = 1;
                 break;
             case 3:
-                carac_ptr->Cor_dos_Olhos = 3;
                 r1 = 1;
                 break;
             case 4:
-                carac_ptr->Cor_dos_Olhos = 4;
                 r1 = 1;
                 break;
             case 5:
-                carac_ptr->Cor_dos_Olhos = 5;
                 r1 = 1;
                 break;
             default: printf("\nCor invalida...\n");
@@ -853,6 +839,11 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No iníc
 }
 /*coisa ainda para finalizar:
 
+{funcao de caracteristicas fisicas:
+
+-vai ser parecida, senão igual a da ficha tecnica, só tirar o if da pessoa saldavel e continuar as perguntas da mesma forma(com 0s, 1s ou outro valor)
+coloca uns 3 tipos de cor de cabelo, sendo o 3 como "outros" assim como olhos, pele. n precisa colocar altura pq vou colocar na struct de ficha tecnica
+} Diogo
 
 -criar a função para mostrar,tanto a da ficha tecnica, quanto a de caracteristicas, essa função vai seguir a logica de apenas mostrar as coisas que a pessoa tem,
 com ifs fazendo uma logica de que se for 1 mostra ela e se for 0, n mostra, a parte de salvar em arquivo deixa comigo, só lembra de fazer com que a função não deixe

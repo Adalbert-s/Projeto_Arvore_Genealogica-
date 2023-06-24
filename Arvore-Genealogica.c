@@ -143,8 +143,33 @@ void PreencheFicha(void *struct_ptr, int tipo);
 void PreencheCaracteristicas(void *struct_ptr, int tipo);
 
 int main(void){
+    int opcao;
 
+    do{
     printf("-----|ARVORE GENEALOGICA.|-----\n");
+    printf("Digite a opcao desejada. \n");
+    printf("1. Cadastrar Pessoa.\n");
+    printf("2. Ver pessoas cadastradas.\n");
+    printf("0. Sair.\n");
+    scanf("%d",&opcao);
+
+    switch(opcao){
+        case 1:
+            cadastrarClientes();
+            break;
+        case 2:
+            recuperarClientes();
+            break;
+        case 0:
+            printf("Saindo...\n");
+        default:
+            printf("Opcao invalida. Tente novamente.\n");
+            break;
+    }
+} while (opcao != 0);
+    return 0;
+
+
     cria_pastas();
 
 /*=========================================================================================================================*/
@@ -741,7 +766,7 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {
         }
     }while(r1 == 0);
 /*TA AQUI--------------------------------------*/
-    carac_ptr->Cor_do_Cabelo = r1;
+   // carac_ptr->Cor_do_Cabelo = r1;
     
 /*---------------------------------------------*/
     do{

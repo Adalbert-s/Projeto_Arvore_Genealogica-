@@ -38,49 +38,49 @@ typedef struct FichaTecnica{
 
     int Saudavel;                                       //usuario saudavel(nao possui nenhuma doenca)
     //doencas hereditarias
-    int Sindrome_de_Down;                               //Sindrome de Down                          //atualmente classificas com IDs de 1000 - 1005 para nao se confundir com os outros.
-    int Sindrome_de_Turner;                             //Sindrome de Turner                        //Em breve penso em criar structs com mais informacoes sobre cada doenca.
+    int Sindrome_de_Down;                               //Sindrome de Down                          
+    int Sindrome_de_Turner;                             //Sindrome de Turner                       
     int Hemofilia;                                      //Hemofilia
     //doencas nao hereditarias.
     int Diabetes;                                       //Diabetes Tipo 2
     int Doenca_Cardiovascular;                          //Doenca Cardiovascular
     int Doenca_de_Huntington;                           //Doenca de Huntington
 
-}ficha;                                                                                            //tabela de IDs:        doencas: 1000 - 1005
-//{1000, 1001, 1002, 1003, 1004, 1005};   //iniciando a estrutura com valores(IDs).
+}ficha;                                                                                            
+
 
 typedef struct CaracteristicasFisicas{
 
     int Cor_do_Cabelo;
     int Tipo_de_Cabelo;
-
     int Cor_da_Pele;
-
     int Cor_dos_Olhos;
+
+    char peso   [10];
+    char altura [10];
+
 }caracfis;
 
-//estrutura com as informacoes de cada um dos 2.                                                    pessoas: formado por 10 digitos(exemplo: 000.000.000.0):
-typedef struct FILHO{                                                                               // 1 digito(sexo): 1 = homem / 0 = mulher.
+//estrutura com as informacoes de cada um dos 2.                                                   
+typedef struct FILHO{                                                                              
 
-    //informacoes basicas.                                                                          // 2 digito(estado): 1 = casado / 0 = solteiro.
-    char ID     [10];
-    char nome   [50];                                                                                  // 3 digito(idade): 0 = idade < 18 / 1 = 18 > idade < 80 / 2 = idade > 80.
+    //informacoes basicas.                                                                          
+
+    char nome   [50];                                                                                  
     char idade  [10];
-    char peso   [10];                                                                                     // 4-6 digito(pai)/7-9(mae): recebe o id do casal de cima.
+                                                                                    
+    //informacoes sobre suas doencas                                                                
 
-    //informacoes sobre suas doencas                                                                // 10 digito(nivel): definine onde que o casal esta na arvore.
-
-    struct FichaTecnica ficha;               //array de ponteiros para apenas 1, ou seja cada pessoa so vai poder ter uma ficha tecnica.
+    struct FichaTecnica ficha;               
     struct CaracteristicasFisicas caracfis;
 
 }filho;
 
 typedef struct CONJUGUE{
     //informacoes basicas.
-    char ID     [10];
+
     char nome   [50];
     char idade  [10];
-    char peso   [10];
 
     struct FichaTecnica ficha;
     struct CaracteristicasFisicas caracfis;
@@ -90,7 +90,8 @@ typedef struct CONJUGUE{
 //estrutura com as informacoes do casal.
 typedef struct{
 
-    char ID[8];                            //ID do casal vai ter 7 digitos(3 de cada pessoa, 1 de descendencia(ex: 000.000.0)).
+    char ID[8];                            
+
     struct FILHO filho;                   //descendecia: filho pertencente a arvore(1), conjugue(0). //(idade,descedencia(pai),nivel).
     struct CONJUGUE conjugue;
 
@@ -100,10 +101,8 @@ typedef struct{
 
 typedef struct no {
 
-    char ID[8];
     casal casal;
 
-    struct no *ant;
     struct no *prox;
 
     int tam;
@@ -120,30 +119,39 @@ typedef struct
 // funcoes para escrever e ler os dados dos integrantes em arquivos
 
 short int   cria_pastas         (void);                     //funcao para a criacao de pastas, tipo short int pois o short int ja é mais que o necessario para essa funcao.
-int         escrever_arquivo    (casal *C);     //funcao para escrever as informacoes em um arquivo binario.
 short int   verificaPasta       (const char* nomePasta);
-short int   existe_pessoa       (const char *nome_arquivo_registro);
-//void        ler_arquivo         (const char* nomePasta, char nome_arquivo_registro);            //funcao para ler os dados da pessoa.
 
 //funcoes de manipulacao
 
-int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab);
-void cadastrarClientes();
-void recuperarClientes();
+int         salvar              (ListaLDE *inicio, ListaLDE *aux, TCabecalho cab);
+void        cadastrar           ();
+void        recuperar           ();
 
 //funcoes complementares.
 
-short int   Adiciona_Pessoa     ();
-void        Adiciona_filho      (casal *C);            //funcao para adicionar as informacoes de um novo integrante,struct pessoa como parametro,passada com &(endereço)para que seja modificada e salva em arquivo.
+void        Adiciona_filho      (casal *C);           
 void        Adiciona_conjugue   (casal *C);
 short int   Adiciona_par        (casal *C);
 void        Adiciona_filho      (casal *C);
-int         Gera_ID             (casal *C);            //funcao para adicionar um ID para a pessoa.
-void PreencheFicha(void *struct_ptr, int tipo);
-void PreencheCaracteristicas(void *struct_ptr, int tipo);
+
+int         obterResposta       (const char* resposta);
+
+void PreencheFicha              (void *struct_ptr, int tipo);
+void PreencheCaracteristicas    (void *struct_ptr, int tipo);
+
+void limparBuffer();
+char* lerResposta(int tamanho, FILE* fluxo);
+
+void gerarID(casal *C);
+void salvarID(int idPadrao);
+int lerID();
 
 int main(void){
     int opcao;                                              // Variavel para Escolha das opçoes do menu
+
+    cria_pastas();
+
+/*=========================================================================================================================*/
 
     do{                                                     // Menu de interação criado para usabilidade dos usuarios
     printf("-----|ARVORE GENEALOGICA.|-----\n");
@@ -151,14 +159,15 @@ int main(void){
     printf("1. Cadastrar Pessoa.\n");
     printf("2. Ver pessoas cadastradas.\n");
     printf("0. Sair.\n");
+
     scanf("%d",&opcao);
 
     switch(opcao){
         case 1:
-            cadastrarClientes();
+            cadastrar();
             break;
         case 2:
-            recuperarClientes();
+            recuperar();
             break;
         case 0:
             printf("Saindo...\n");
@@ -167,16 +176,7 @@ int main(void){
             printf("Opcao invalida. Tente novamente.\n");
             break;
     }
-} while (opcao != 0);                                           // Condição de parada utlizada caso a pessoa escolha Sair
-    return 0;
-
-
-    cria_pastas();
-
-/*=========================================================================================================================*/
-
-    cadastrarClientes();
-    recuperarClientes();
+    } while (!opcao); 
 
 /*=========================================================================================================================*/
 
@@ -211,94 +211,41 @@ short int cria_pastas(void){
 
     return 1;
 }
-
-short int Adiciona_Pessoa(){
-
-    int opcao;
-    char op[2];
-    char nome [8];
-
-    do{
-        printf("Quem voce deseja adicionar: filho(1) / conjugue(2)?\n");
-        scanf("%d", &opcao);
-
-        getchar();
-        printf("opcao: %d\n",opcao);
-
-        if(opcao == 1){
-            break;                      // Sai do loop se a opção for 1 (filho)
-        }
-        else if(opcao == 2){
-            printf("Digite o ID da pessoa com que essa e casada: \n");
-            fgets(nome, sizeof(nome), stdin);                                   // Lê o ID da pessoa com que esta é casada a partir da entrada padrão
-            printf("Procurando pessoa no sistema...\n");
-
-            if(existe_pessoa(nome)){                                            // Verifica se a pessoa com o ID fornecido já existe no sistema
-                printf("Pessoa encontrada com sucesso...\n");
-                opcao = 2;
-                break;
-            }
-            else{
-                printf("Pessoa nao encontrada, deseja salvar? \n");
-                fgets(op, sizeof(op), stdin);
-                if(op[0] == 's' || op[0] == 'S'){
-                    opcao = 3;
-                    break;
-                }
-                else
-                printf("Certo, Saindo do programa...\n");
-                opcao = 0;
-                break;
-            }
-        }
-        else
-            printf("| ERRO! Opcao invalida.");
-
-    }while(1);
-
-    return opcao;                                                            // Retorna a opção escolhida pelo usuário
-}
-
+ 
 void Adiciona_filho(casal *C){
-
-
-    printf("Digite o ID do filho: ");                       //usando fgets para ter mais segurança e nao ocasionar em um overflow, fgets normalmente le uma linha inteira de uma só vez.
-    fgets(C->filho.ID, sizeof(C->filho.ID) - 1, stdin);       //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
-    C->filho.ID[strcspn(C->filho.ID, "\n")] = '\0';       //substitui o caractere de quebra de linha (\n) pelo caractere nulo (\0) na string filho.nome.  //evita possiveis problemas na string
-
-    printf("ID:%s\n", C->filho.ID);
+    printf("Por favor adicione os dados:\n");
+    limparBuffer();
 
     printf("Digite o nome: ");
-    fgets(C->filho.nome, sizeof(C->filho.nome) - 1, stdin);
-    C->filho.nome[strcspn(C->filho.nome, "\n")] = '\0';
+
+    char* nomeFilho = lerResposta(sizeof(C->filho.nome), stdin);
+    strncpy(C->filho.nome, nomeFilho, sizeof(C->filho.nome) - 1);
+    C->filho.nome[sizeof(C->filho.nome) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
 
     printf("Digite a idade: ");                         //por idade ser um inteiro, não vou ter uma string de comparacao, então criei uma variavel para armazenar.
-    fgets(C->filho.idade, sizeof(C->filho.idade) - 1, stdin);     //char input[4] pois tendo em vista que idade nunca vai ser maior que 3 digitos.        //fgets usando a mesma logica que o de cima.
-    C->filho.idade[strcspn(C->filho.idade, "\n")] = '\0';
-
-    printf("Digite o peso: ");
-    fgets(C->filho.peso, sizeof(C->filho.peso) - 1, stdin);
-    C->filho.peso[strcspn(C->filho.peso, "\n")] = '\0';    //strtof para transformar em float                      //essa função não recebe o argumento de base numerica.
+    char* idadeFilho = lerResposta(sizeof(C->filho.idade), stdin);
+    strncpy(C->filho.idade, idadeFilho, sizeof(C->filho.idade) - 1);
+    C->filho.idade[sizeof(C->filho.idade) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
 
 }
 
 void Adiciona_conjugue(casal *C){
 
-    printf("Digite o ID: ");                //usando fgets para ter mais segurança e nao ocasionar em um overflow, fgets normalmente le uma linha inteira de uma só vez.
-    fgets(C->conjugue.ID, sizeof(C->conjugue.ID)- 1, stdin);   //fgets precisa ter 3 definicoes (ponteiro onde vai armazenar a string lida, tamanho, ponteiro para o fluxo de entrada, normalmente se usa stdin).
-    C->conjugue.ID[strcspn(C->conjugue.ID, "\n")] = '\0';     //substitui o caractere de quebra de linha (\n) pelo caractere nulo (\0) na string conjugue.nome.  //evita possiveis problemas na string
+    limparBuffer();
 
     printf("Digite o nome: ");
-    fgets(C->conjugue.nome, sizeof(C->conjugue.nome) - 1, stdin);
-    C->conjugue.nome[strcspn(C->conjugue.nome, "\n")] = '\0';
+
+    char* nomeconjugue = lerResposta(sizeof(C->conjugue.nome), stdin);
+
+    strncpy(C->conjugue.nome, nomeconjugue, sizeof(C->conjugue.nome) - 1);
+    C->conjugue.nome[sizeof(C->conjugue.nome) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
 
     printf("Digite a idade: ");
-    fgets(C->conjugue.idade, sizeof(C->conjugue.idade) - 1, stdin);     //char input[4] pois tendo em vista que idade nunca vai ser maior que 3 digitos.        //fgets usando a mesma logica que o de cima.
-    C->conjugue.idade[strcspn(C->conjugue.idade, "\n")] = '\0';
 
-    printf("Digite o peso: ");
-    fgets(C->conjugue.peso, sizeof(C->conjugue.peso) - 1, stdin);
-    C->conjugue.peso[strcspn(C->conjugue.peso, "\n")] = '\0';
+    char* idadeconjugue = lerResposta(sizeof(C->conjugue.idade), stdin);
+
+    strncpy(C->conjugue.idade, idadeconjugue, sizeof(C->conjugue.idade) - 1);
+    C->conjugue.idade[sizeof(C->conjugue.idade) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
 
 }
 
@@ -315,101 +262,47 @@ short int Adiciona_par(casal *C){
         }
         else{
             char desconhecido[20] = "desconhecido";                                 // Define os valores "desconhecido" para o ID, nome, idade e peso do cônjuge
-            strcpy(C->conjugue.ID, desconhecido);
             strcpy(C->conjugue.nome, desconhecido);
             strcpy(C->conjugue.idade, desconhecido);
-            strcpy(C->conjugue.peso, desconhecido);
         }
     }
     return 0;                                                           // Retorna 0 para indicar que nenhuma ação adicional é necessária
 }
 
-int escrever_arquivo(casal *C) {
-    FILE *file;
-    char nome_arquivo_registro[50] = "dados";
+int lerID() {
+    int idPadrao = 100000; // Valor padrão caso o arquivo não exista
 
-
-    file = fopen(nome_arquivo_registro, "w+");                      // Abre o arquivo para escrita e leitura (cria o arquivo se não existir)
-
-    if (file == NULL) {                                                 // Verifica se houve um erro ao abrir o arquivo
-        printf("Erro ao abrir o arquivo %s\n", nome_arquivo_registro);
-        return 0;                                                           // Retorna 0 para indicar que houve um erro ao abrir o arquivo
+    FILE* arquivo = fopen("id.txt", "r");
+    if (arquivo != NULL) {
+        fscanf(arquivo, "%d", &idPadrao);
+        fclose(arquivo);
     }
 
-    printf("Digite o ID do filho: ");
-    fgets(C->filho.ID, sizeof(C->filho.ID) - 1, stdin);                     //utiliza a função fgets para ler uma linha de entrada a partir do fluxo de entrada padrão (stdin) e armazena essa linha no campo ID da estrutura filho.   //O tamanho máximo da string lida é limitado pelo valor sizeof(C->filho.ID) - 1 para evitar o estouro de buffer.
-    C->filho.ID[strcspn(C->filho.ID, "\n")] = '\0';
-    printf("ID:%s\n", C->filho.ID);
+    return idPadrao;
+}
 
-    printf("Digite o nome: ");
-    fgets(C->filho.nome, sizeof(C->filho.nome) - 1, stdin);                            // Lê uma linha de entrada e armazena no nome do filho
-    C->filho.nome[strcspn(C->filho.nome, "\n")] = '\0';                                // Remove o caractere de nova linha (\n) do final da string
+void salvarID(int idPadrao) {
+    FILE* arquivo = fopen("id.txt", "w");
+    if (arquivo != NULL) {
+        fprintf(arquivo, "%d", idPadrao);
+        fclose(arquivo);
+    }
+}
 
-    printf("Digite a idade: ");
-    fgets(C->filho.idade, sizeof(C->filho.idade) - 1, stdin);                          // Lê uma linha de entrada e armazena na Idade do filho
-    C->filho.idade[strcspn(C->filho.idade, "\n")] = '\0';
+void gerarID(casal* C) {
+    static int idPadrao = 100000;
 
-    printf("Digite o peso: ");
-    fgets(C->filho.peso, sizeof(C->filho.peso) - 1, stdin);                            // Lê uma linha de entrada e armazena no peso do filho
-    C->filho.peso[strcspn(C->filho.peso, "\n")] = '\0';
-
-
-    printf("Digite o ID: ");
-    fgets(C->conjugue.ID, sizeof(C->conjugue.ID)- 1, stdin);
-    C->conjugue.ID[strcspn(C->conjugue.ID, "\n")] = '\0';
-
-    printf("Digite o nome: ");
-    fgets(C->conjugue.nome, sizeof(C->conjugue.nome) - 1, stdin);
-    C->conjugue.nome[strcspn(C->conjugue.nome, "\n")] = '\0';
-
-    printf("Digite a idade: ");
-    fgets(C->conjugue.idade, sizeof(C->conjugue.idade) - 1, stdin);
-    C->conjugue.idade[strcspn(C->conjugue.idade, "\n")] = '\0';
-
-    printf("Digite o peso: ");
-    fgets(C->conjugue.peso, sizeof(C->conjugue.peso) - 1, stdin);
-    C->conjugue.peso[strcspn(C->conjugue.peso, "\n")] = '\0';
-
-
-
-    /*if (existe_pessoa(nome_arquivo_registro)) {                           //verifica se a pessoa já está cadastrada verificando a existência do registro usando a função existe_pessoa
-        printf("Erro, Casal ja cadrastada!\n");
-        printf("Deseja fazer alteracoes nas informacoes desse casal?\n");
-        getchar();
-        fgets(op, sizeof(op), stdin);
-        if (op[0] == 's' || op[0] == 'S') {
-            goto continuar;                                             // Se a resposta do usuário for 's' ou 'S', vai para a etiqueta 'continuar' para prosseguir com as alterações
-        } else {
-            return 0;
-        }
-    } else {
-        printf("A pessoa nao esta registrada.\n");
+    if (idPadrao == 100000) {
+        idPadrao = lerID();
     }
 
-    continuar:*/
-    /*printf("DADOS DO CASAL: \n");
-    printf("FILHO: \n");
-    printf("ID:%s\n", C->filho.ID);
-    printf("nome:%s\n", C->filho.nome);
-    printf("idade:%i\n", C->filho.idade);
-    printf("Peso:%i\n", C->filho.peso);
+    char idString[10]; // Tamanho suficiente para armazenar o ID como uma string
+    sprintf(idString, "%d", idPadrao); // Converte o ID numérico em uma string
 
-    printf("CONJUGUE: \n");
-    printf("ID:%s\n", C->conjugue.ID);
-    printf("nome:%s\n", C->conjugue.nome);
-    printf("idade:%i\n", C->conjugue.idade);
-    printf("Peso:%i\n", C->conjugue.peso);*/
+    strcpy(C->ID, idString); // Copia a string do ID para a estrutura
 
-
-/*fprintf(file, "%s\n", C->ID);                                                                         //responsável por escrever informações em um arquivo. Cada linha utiliza a função fprintf para escrever os valores das variáveis nas posições correspondentes no arquivo especificado pelo ponteiro file
-fprintf(file, "%s %s %s %f\n", C->filho.ID, C->filho.nome, C->filho.idade, C->filho.peso);
-fprintf(file, "%s %s %s %f\n", C->conjugue.ID, C->conjugue.nome, C->conjugue.idade, C->conjugue.peso);*/
-
-
-    fwrite(&C, sizeof(casal), 1, file);                                                                 //A função fwrite é utilizada para escrever os dados do objeto C no arquivo especificado pelo ponteiro file. O primeiro argumento &C representa o endereço de memória onde estão armazenados os dados do objeto
-    fclose(file);
-
-    return 1;
+    idPadrao++;
+    salvarID(idPadrao);
 }
 
 short int verificaPasta(const char* nomePasta) {
@@ -429,47 +322,52 @@ short int verificaPasta(const char* nomePasta) {
     }
 }
 
-short int existe_pessoa(const char *nome_arquivo_registro){
+void cadastrar() {
 
-    FILE* arquivo = fopen(nome_arquivo_registro, "r");
-
-    if (arquivo == NULL) {
-        // Arquivo não encontrado
-        return 1;
-    }
-
-    // Arquivo encontrado"
-    fclose(arquivo);
-    return 0;
-}
-
-void cadastrarClientes() {
-    ListaLDE *inicio = NULL, *ponteiro;
+    ListaLDE *inicio = NULL, *aux;
     casal C;
     char tecla;
 
+    limparBuffer();
+
     /* Cadastro */
-    do {
-        int opcao = Adiciona_Pessoa();
+    do{
 
-        if(opcao== 1){
-            Adiciona_filho(&C);
+        Adiciona_filho(&C);
+        PreencheFicha(&C,1);
+        PreencheCaracteristicas(&C, 1);
 
-            if(Adiciona_par(&C)){
-                Adiciona_conjugue(&C);
-        }
-        }else if(opcao == 2){
+        if(Adiciona_par(&C)){
+            
             Adiciona_conjugue(&C);
+            PreencheFicha(&C,2);
+            PreencheCaracteristicas(&C, 2);
+        }else{
+            C.conjugue.ficha.Saudavel = 0;
+            C.conjugue.ficha.Sindrome_de_Down = 0;
+            C.conjugue.ficha.Sindrome_de_Turner = 0;
+            C.conjugue.ficha.Hemofilia = 0;
+            C.conjugue.ficha.Diabetes = 0;
+            C.conjugue.ficha.Doenca_Cardiovascular = 0;
 
-        }else if(opcao == 3){
-            Adiciona_filho(&C);
+            C.conjugue.caracfis.Cor_do_Cabelo = 0;
+            C.conjugue.caracfis.Tipo_de_Cabelo = 0;
+            C.conjugue.caracfis.Cor_da_Pele = 0;
+            C.conjugue.caracfis.Cor_dos_Olhos = 0;
 
-    }
+            char desconhecido[20] = "desconhecido";                                 // Define os valores "desconhecido" para o ID, nome, idade e peso do cônjuge
+            strcpy(C.conjugue.caracfis.peso, desconhecido);
+            strcpy(C.conjugue.caracfis.altura, desconhecido);
+        }
+                   
+        gerarID(&C);
+
         fflush(stdin);
 
         /* Cria uma lista encadeada */
+
         if (!inicio) {
-            ponteiro = inicio = malloc(sizeof(ListaLDE));
+            aux = inicio = malloc(sizeof(ListaLDE));
             if (!inicio) {
                 printf("Erro ao alocar memória.\n");
                 return;
@@ -477,46 +375,101 @@ void cadastrarClientes() {
             inicio->casal = C;
             inicio->prox = NULL;
         } else {
-            ponteiro = ponteiro->prox = malloc(sizeof(ListaLDE));
-            if (!ponteiro) {
+            aux = aux->prox = malloc(sizeof(ListaLDE));
+            if (!aux) {
                 printf("Erro ao alocar memória.\n");
                 return;
             }
-            ponteiro->casal = C;
-            ponteiro->prox = NULL;
+            aux->casal = C;
+            aux->prox = NULL;
         }
 
         printf("\nDeseja sair (S/N):\t");
         scanf("%c", &tecla);
         getchar();
+
     } while (toupper(tecla) != 'S');
 
+/*=======================================================================================================================*/
     /* Mostra a lista */
-    ponteiro = inicio;
-    while (ponteiro) {
-        printf("\nFILHO:");
-        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", ponteiro->casal.filho.nome, ponteiro->casal.filho.idade, ponteiro->casal.filho.peso);
-        printf("\nCONJUGUE:");
-        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", ponteiro->casal.conjugue.nome,ponteiro->casal.conjugue.idade, ponteiro->casal.conjugue.peso);
-        ponteiro = ponteiro->prox;
+
+    aux = inicio;
+
+    while (aux) {
+        printf("\n----------|PESSOAS|----------");
+        printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
+        printf("--------------------------------\n");
+
+        printf("|%-15s   %-15s|\n", "Nome:", "Nome:");
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.nome, aux->casal.conjugue.nome);
+
+        printf("\n|%-15s   %-15s|\n", "Idade:", "Idade:");
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.idade, aux->casal.conjugue.idade);
+
+        printf("========================================================================\n");
+        printf("\n---------|FICHA TECNICA|---------");
+        printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
+        printf("--------------------------------\n");
+
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Saudavel ? "Sim" : "Não", aux->casal.conjugue.ficha.Saudavel ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Diabetes ? "Sim" : "Não", aux->casal.conjugue.ficha.Diabetes ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Doenca_Cardiovascular ? "Sim" : "Não", aux->casal.conjugue.ficha.Doenca_Cardiovascular ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Hemofilia ? "Sim" : "Não", aux->casal.conjugue.ficha.Hemofilia ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Doenca_de_Huntington ? "Sim" : "Não", aux->casal.conjugue.ficha.Doenca_de_Huntington ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Sindrome_de_Down ? "Sim" : "Não", aux->casal.conjugue.ficha.Sindrome_de_Down ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Sindrome_de_Turner ? "Sim" : "Não", aux->casal.conjugue.ficha.Sindrome_de_Turner ? "Sim" : "Não");
+
+        printf("========================================================================\n");
+        printf("\n---------|CARACTERISTICAS FISICAS|---------");
+        printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
+        printf("--------------------------------\n");
+
+        printf("|%-15s   %-15s|\n", "Altura:", "Altura:");
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.caracfis.altura, aux->casal.conjugue.caracfis.altura);
+
+        printf("|%-15s   %-15s|\n", "Peso:", "Peso:");
+        printf("|%-15s   %-15s|\n\n", aux->casal.filho.caracfis.peso, aux->casal.conjugue.caracfis.peso);
+
+        printf("|%-15s   %-15s|\n", "Cor de Cabelo:", "Cor de cabelo:");
+        printf("|%-15d   %-15d|\n\n", aux->casal.filho.caracfis.Cor_do_Cabelo, aux->casal.conjugue.caracfis.Cor_do_Cabelo);
+
+        printf("|%-15s   %-15s|\n", "Tipo de Cabelo:", "Tipo de Cabelo:");
+        printf("|%-15d   %-15d|\n\n", aux->casal.filho.caracfis.Tipo_de_Cabelo, aux->casal.conjugue.caracfis.Tipo_de_Cabelo);
+        
+        printf("|%-15s   %-15s|\n", "Cor de Pele:", "Cor de Pele:");
+        printf("|%-15d   %-15d|\n\n", aux->casal.filho.caracfis.Cor_da_Pele, aux->casal.conjugue.caracfis.Cor_da_Pele);
+
+        printf("|%-15s   %-15s|\n", "Cor dos Olhos:", "Cor dos Olhos:");
+        printf("|%-15d   %-15d|\n\n", aux->casal.filho.caracfis.Cor_dos_Olhos, aux->casal.conjugue.caracfis.Cor_dos_Olhos);
+
+
+        
+        aux = aux->prox;
     }
+/*=======================================================================================================================*/
 
     /* Salva a lista em um arquivo */
     TCabecalho cab;
-    if (salvar(inicio, ponteiro, cab) == -1) {
+    if (salvar(inicio, aux, cab) == -1) {
         printf("Erro ao salvar os dados.\n");
     }
 
     /* Libera a memória */
-    ponteiro = inicio;
-    while (ponteiro) {
-        inicio = ponteiro->prox;
-        free(ponteiro);
-        ponteiro = inicio;
+    aux = inicio;
+    while (aux) {
+        inicio = aux->prox;
+        free(aux);
+        aux = inicio;
     }
 }
 
-void recuperarClientes() {
+void recuperar() {
 
     TCabecalho cab;
     FILE* file;
@@ -550,16 +503,70 @@ void recuperarClientes() {
     fclose(file);
 
     for (cont = 0; cont < cab.q_registros; cont++) {
-        printf("\nFILHO:");
-        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", C[cont].filho.nome, C[cont].filho.idade, C[cont].filho.peso);
+       /* printf("\nFILHO:");
+        printf("\nNome:\t%s\nIdade:\t%s", C[cont].filho.nome, C[cont].filho.idade);
         printf("\nCONJUGUE:");
-        printf("\nNome:\t%s\nIdade:\t%s\nPeso:\t%s", C[cont].conjugue.nome, C[cont].conjugue.idade, C[cont].conjugue.peso);
+        printf("\nNome:\t%s\nIdade:\t%s", C[cont].conjugue.nome, C[cont].conjugue.idade);*/
+
+
+                printf("\n----------|PESSOAS|----------\n");
+        printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
+        printf("--------------------------------\n");
+
+        printf("|%-15s   %-15s|\n", "Nome:", "Nome:");
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.nome, C[cont].conjugue.nome);
+
+        printf("\n|%-15s   %-15s|\n", "Idade:", "Idade:");
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.idade, C[cont].conjugue.idade);
+
+        printf("========================================================================\n");
+        printf("\n---------|FICHA TECNICA|---------\n");
+        printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
+        printf("--------------------------------\n");
+
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.ficha.Saudavel ? "Sim" : "Não", C[cont].conjugue.ficha.Saudavel ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.ficha.Diabetes ? "Sim" : "Não", C[cont].conjugue.ficha.Diabetes ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.ficha.Doenca_Cardiovascular ? "Sim" : "Não", C[cont].conjugue.ficha.Doenca_Cardiovascular ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.ficha.Hemofilia ? "Sim" : "Não", C[cont].conjugue.ficha.Hemofilia ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.ficha.Doenca_de_Huntington ? "Sim" : "Não", C[cont].conjugue.ficha.Doenca_de_Huntington ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.ficha.Sindrome_de_Down ? "Sim" : "Não", C[cont].conjugue.ficha.Sindrome_de_Down ? "Sim" : "Não");
+
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.ficha.Sindrome_de_Turner ? "Sim" : "Não", C[cont].conjugue.ficha.Sindrome_de_Turner ? "Sim" : "Não");
+
+        printf("========================================================================\n");
+        printf("\n---------|CARACTERISTICAS FISICAS|---------\n");
+        printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
+        printf("--------------------------------\n");
+
+        printf("|%-15s   %-15s|\n", "Altura:", "Altura:");
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.caracfis.altura, C[cont].conjugue.caracfis.altura);
+
+        printf("|%-15s   %-15s|\n", "Peso:", "Peso:");
+        printf("|%-15s   %-15s|\n\n", C[cont].filho.caracfis.peso, C[cont].conjugue.caracfis.peso);
+
+        printf("|%-15s   %-15s|\n", "Cor de Cabelo:", "Cor de cabelo:");
+        printf("|%-15d   %-15d|\n\n", C[cont].filho.caracfis.Cor_do_Cabelo, C[cont].conjugue.caracfis.Cor_do_Cabelo);
+
+        printf("|%-15s   %-15s|\n", "Tipo de Cabelo:", "Tipo de Cabelo:");
+        printf("|%-15d   %-15d|\n\n", C[cont].filho.caracfis.Tipo_de_Cabelo, C[cont].conjugue.caracfis.Tipo_de_Cabelo);
+        
+        printf("|%-15s   %-15s|\n", "Cor de Pele:", "Cor de Pele:");
+        printf("|%-15d   %-15d|\n\n", C[cont].filho.caracfis.Cor_da_Pele, C[cont].conjugue.caracfis.Cor_da_Pele);
+
+        printf("|%-15s   %-15s|\n", "Cor dos Olhos:", "Cor dos Olhos:");
+        printf("|%-15d   %-15d|\n\n", C[cont].filho.caracfis.Cor_dos_Olhos, C[cont].conjugue.caracfis.Cor_dos_Olhos);
+
     }
 
     free(C);
 }
 
-int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab) {
+int salvar(ListaLDE *inicio, ListaLDE *aux, TCabecalho cab) {
     FILE *arq;
     ListaLDE *p;
 
@@ -585,10 +592,10 @@ int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab) {
     fwrite(&cab, sizeof(TCabecalho), 1, arq);
 
     /* Escreve os registros no arquivo */
-    ponteiro = inicio;
-    while (ponteiro) {
-        fwrite(&ponteiro->casal, sizeof(casal), 1, arq);
-        ponteiro = ponteiro->prox;
+    aux = inicio;
+    while (aux) {
+        fwrite(&aux->casal, sizeof(casal), 1, arq);
+        aux = aux->prox;
     }
 
     /* Fecha o arquivo */
@@ -596,9 +603,11 @@ int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab) {
     return 0;
 }
 
-void PreencheFicha(void *struct_ptr, int tipo) {                                                   //preenche a ficha de características de uma pessoa representada por uma estrutura casal ou conjugue, dependendo do tipo especificado.
-    int c;
+void PreencheFicha(void *struct_ptr, int tipo) {
+    int c ;
     char r[4];
+    int saudavel;
+
     casal *casal_ptr = struct_ptr;
     ficha *ficha_ptr;
 
@@ -612,279 +621,240 @@ void PreencheFicha(void *struct_ptr, int tipo) {                                
     }
 
     printf("\nPreenchimento da Ficha Tecnica\n");
+
     do {
-        c = 0;
-        printf("\nA pessoa é saudável? ");
+        printf("\nA pessoa e saudavel? ");
         fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';                                                     // Remover o caractere '\n' do final da string
-        for (unsigned int R = 0; R < strlen(r); R++) {
-            r[R] = toupper(r[R]);
-        }
-        if (strcmp(r, "SIM") == 0) {
+        r[strcspn(r, "\n")] = '\0';
+        int resposta = obterResposta(r);
+
+        if (resposta) {
             ficha_ptr->Saudavel = 1;
-            c = 1;
-            return;
-        } else if (strcmp(r, "NAO") == 0) {
-            c = 1;
-        }
-    } while (c == 0);
+            saudavel = 1;
+            break;
 
-    do {
-        c = 0;
-        printf("\nA pessoa tem Síndrome de Down? ");
-        fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';
-        for (unsigned int R = 0; R < strlen(r); R++) {
-            r[R] = toupper(r[R]);
+        } else {
+            ficha_ptr->Saudavel = 0;
+            break;
+            
         }
-        if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Sindrome_de_Down = 1;                                ////Este trecho de código está dentro de um loop do-while e é responsável por solicitar e armazenar a informação se a pessoa possui ou não a Sindrome de Down.
-            c = 1;
-        } else if (strcmp(r, "NAO") == 0) {
-            c = 1;
-        }
-    } while (c == 0);
+    } while (1);
 
-    do {
-        c = 0;
-        printf("\nA pessoa tem Síndrome de Turner? ");
-        fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';
-        for (unsigned int R = 0; R < strlen(r); R++) {
-            r[R] = toupper(r[R]);
-        }
-        if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Sindrome_de_Turner = 1;                                      //Este trecho de código está dentro de um loop do-while e é responsável por solicitar e armazenar a informação se a pessoa possui ou não a Sindrome de Turner.
-            c = 1;
-        } else if (strcmp(r, "NAO") == 0) {
-            c = 1;
-        }
-    } while (c == 0);
+    if(saudavel == 0){
+        do {
+            c = 0;
+            printf("\nA pessoa tem Síndrome de Down? ");
+            fgets(r, sizeof(r), stdin);
+            r[strcspn(r, "\n")] = '\0';
+            int resposta = obterResposta(r);
+            if (resposta) {
+                ficha_ptr->Sindrome_de_Down = 1;
+                c = 1;
+            } else {
+                ficha_ptr->Sindrome_de_Down = 0;
+                c = 1;
+            }
+        } while (c == 0);
 
-    do {
-        c = 0;
-        printf("\nA pessoa tem Hemofilia? ");
-        fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';
-        for (unsigned int R = 0; R < strlen(r); R++) {
-            r[R] = toupper(r[R]);
-        }
-        if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Hemofilia = 1;
-            c = 1;
-        } else if (strcmp(r, "NAO") == 0) {
-            c = 1;
-        }
-    } while (c == 0);
+        do {
+            c = 0;
+            printf("\nA pessoa tem Síndrome de Turner? ");
+            fgets(r, sizeof(r), stdin);
+            r[strcspn(r, "\n")] = '\0';
+            int resposta = obterResposta(r);
+            if (resposta) {
+                ficha_ptr->Sindrome_de_Turner = 1;
+                c = 1;
+            } else {
+                ficha_ptr->Sindrome_de_Turner = 0;
+                c = 1;
+            }
+        } while (c == 0);
 
-    do {
-        c = 0;
-        printf("\nA pessoa tem Diabetes? ");
-        fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';
-        for (unsigned int R = 0; R < strlen(r); R++) {
-            r[R] = toupper(r[R]);
-        }
-        if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Diabetes = 1;
-            c = 1;
-        } else if (strcmp(r, "NAO") == 0) {
-            c = 1;
-        }
-    } while (c == 0);
+        do {
+            c = 0;
+            printf("\nA pessoa tem Hemofilia? ");
+            fgets(r, sizeof(r), stdin);
+            r[strcspn(r, "\n")] = '\0';
+            int resposta = obterResposta(r);
+            if (resposta) {
+                ficha_ptr->Hemofilia = 1;
+                c = 1;
+            } else {
+                ficha_ptr->Hemofilia = 0;
+                c = 1;
+            }
+        } while (c == 0);
 
-    do {
-        c = 0;
-        printf("\nA pessoa tem Doença Cardiovascular? ");
-        fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';
-        for (unsigned int R = 0; R < strlen(r); R++) {
-            r[R] = toupper(r[R]);
-        }
-        if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Doenca_Cardiovascular = 1;
-            c = 1;
-        } else if (strcmp(r, "NAO") == 0) {
-            c = 1;
-        }
-    } while (c == 0);
+        do {
+            c = 0;
+            printf("\nA pessoa tem Diabetes? ");
+            fgets(r, sizeof(r), stdin);
+            r[strcspn(r, "\n")] = '\0';
+            int resposta = obterResposta(r);
+            if (resposta) {
+                ficha_ptr->Diabetes = 1;
+                c = 1;
+            } else {
+                ficha_ptr->Diabetes = 0;
+                c = 1;
+            }
+        } while (c == 0);
 
-    do {
-        c = 0;
-        printf("\nA pessoa tem Doença de Huntington? ");
-        fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';
-        for (unsigned int R = 0; R < strlen(r); R++) {
-            r[R] = toupper(r[R]);
-        }
-        if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Doenca_de_Huntington = 1;                                                    //Este trecho de código está dentro de um loop do-while e é responsável por solicitar e armazenar a informação se a pessoa possui ou não a Doença de Huntington.
-            c = 1;
-        } else if (strcmp(r, "NAO") == 0) {
-            c = 1;
-        }
-    } while (c == 0);
+        do {
+            c = 0;
+            printf("\nA pessoa tem Doença Cardiovascular? ");
+            fgets(r, sizeof(r), stdin);
+            r[strcspn(r, "\n")] = '\0';
+            int resposta = obterResposta(r);
+            if (resposta) {
+                ficha_ptr->Doenca_Cardiovascular = 1;
+                c = 1;
+            } else {
+                ficha_ptr->Doenca_Cardiovascular = 0;
+                c = 1;
+            }
+        } while (c == 0);
+
+        do {
+            c = 0;
+            printf("\nA pessoa tem Doença de Huntington? ");
+            fgets(r, sizeof(r), stdin);
+            r[strcspn(r, "\n")] = '\0';
+            int resposta = obterResposta(r);
+            if (resposta) {
+                ficha_ptr->Doenca_de_Huntington = 1;
+                c = 1;
+            } else {
+                ficha_ptr->Doenca_de_Huntington = 0;
+                c = 1;
+            }
+        } while (c == 0);
+    }
+    if(saudavel == 1){
+    
+    ficha_ptr->Sindrome_de_Down = 0;
+    ficha_ptr->Sindrome_de_Turner = 0;
+    ficha_ptr->Hemofilia = 0;
+    ficha_ptr->Diabetes = 0;
+    ficha_ptr->Doenca_Cardiovascular = 0;
+    }
 }
 
-void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No início da função, é feita uma verificação do tipo para determinar qual ponteiro de estrutura deve ser utilizado para acessar as características físicas.
-                                                                      // O ponteiro casal_ptr é atribuído ao endereço de memória da estrutura correspondente
-
+void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No início da função, é feita uma verificação do tipo para determinar qual aux de estrutura deve ser utilizado para acessar as características físicas.
+                                                              
     casal *casal_ptr = struct_ptr;
     caracfis *carac_ptr;
-    int c1, c2, c3, t1, r1;
+
+    int c1, c2, c3, c4;
 
     if (tipo == 1) {
-        carac_ptr = &(casal_ptr->filho.ficha);
+        carac_ptr = &(casal_ptr->filho.caracfis);
     } else if (tipo == 2) {
-        carac_ptr = &(casal_ptr->conjugue.ficha);
+        carac_ptr = &(casal_ptr->conjugue.caracfis);
     } else {
         printf("Tipo inválido\n");
         return;
-    }
+    }  
 
     do{
         printf("\nPreenchimento das Caracteristicas Fisicas\n");
         printf("Qual a cor de cabelo da pessoa?\nCastanho(1)\nLoiro(2)\nPreto(3)\nRuivo(4)\nOutro(5)");
+
         scanf("%d", &c1);
-        r1 = 0;
-        switch(c1){
-            case 1:
-                carac_ptr->Cor_do_Cabelo = 1;
-                r1 = 1;
-                break;
-            case 2:
-                carac_ptr->Cor_do_Cabelo = 2;
-                r1 = 1;
-                break;
-            case 3:
-                carac_ptr->Cor_do_Cabelo = 3;
-                r1 = 1;
-                break;
-            case 4:
-                carac_ptr->Cor_do_Cabelo = 4;
-                r1 = 1;
-                break;
-            case 5:
-                carac_ptr->Cor_do_Cabelo = 5;
-                r1 = 1;
-                break;
-            default: printf("\nCor invalida...\n");                           //Após isso, é feita uma verificação utilizando um switch-case. Se o valor de c1 corresponder a um dos casos válidos (1 a 5)
+        getchar();
+        
+        if(c1 < 1 || c1 > 5){
+            printf("\nTipo invalido...\n");
         }
-    }while(r1 == 0);
+
+    } while(c1 < 1 || c1 > 5);
+
+    carac_ptr->Cor_do_Cabelo = c1;
 
     do{
         printf("Qual o tipo de cabelo da pessoa?\nCacheado(1)\nLiso(2)\nOndulado(3)\nOutro(4)");
-        scanf("%d", &t1);
-        r1 = 0;
-        switch(t1){
-            case 1:
-                carac_ptr->Tipo_de_Cabelo = 1;
-                r1 = 1;
-                break;
-            case 2:
-                carac_ptr->Tipo_de_Cabelo = 2;
-                r1 = 1;
-                break;
-            case 3:
-                carac_ptr->Tipo_de_Cabelo = 3;
-                r1 = 1;
-                break;
-            case 4:
-                carac_ptr->Tipo_de_Cabelo = 4;
-                r1 = 1;
-                break;
-            default: printf("\nTipo invalido...\n");
+        scanf("%d", &c2);
+        getchar();
+        
+        if(c2 < 1 || c2 > 4){
+            printf("\nTipo invalido...\n");
         }
-    }while(r1 == 0);
+     } while(c2 < 1 || c2 > 4);
+
+    carac_ptr->Tipo_de_Cabelo = c2;
 
     do{
         printf("Qual a cor da pele da pessoa?\nBranca(1)\nParda(2)\nPreta(3)\nOutra(4)");
-        scanf("%d", &c2);
-        r1 = 0;
-        switch(c2){
-            case 1:
-                carac_ptr->Cor_da_Pele = 1;
-                r1 = 1;
-                break;
-            case 2:
-                carac_ptr->Cor_da_Pele = 2;
-                r1 = 1;
-                break;
-            case 3:
-                carac_ptr->Cor_da_Pele = 3;
-                r1 = 1;
-                break;
-            case 4:
-                carac_ptr->Cor_da_Pele = 4;
-                r1 = 1;
-                break;
-            default: printf("\nCor invalida...\n");
+        scanf("%d", &c3);
+        getchar();
+    
+        if(c3 < 1 || c3 > 4){
+            printf("\nTipo invalido...\n");
         }
-    }while(r1 == 0);
+    } while(c3 < 1 || c3 > 4);
+
+    carac_ptr->Cor_da_Pele = c3;
 
     do{
         printf("Qual a cor dos olhos da pessoa?\nAzul(1)\nCastanho(2)\nPreto(3)\nVerde(4)\nOutro(5)");
-        scanf("%d", &c3);
-        r1 = 0;
-        switch(c3){
-            case 1:
-                carac_ptr->Cor_dos_Olhos = 1;
-                r1 = 1;
-                break;
-            case 2:
-                carac_ptr->Cor_dos_Olhos = 2;
-                r1 = 1;
-                break;
-            case 3:
-                carac_ptr->Cor_dos_Olhos = 3;
-                r1 = 1;
-                break;
-            case 4:
-                carac_ptr->Cor_dos_Olhos = 4;
-                r1 = 1;
-                break;
-            case 5:
-                carac_ptr->Cor_dos_Olhos = 5;
-                r1 = 1;
-                break;
-            default: printf("\nCor invalida...\n");
+         scanf("%d", &c4);
+        getchar();
+    
+        if(c4 < 1 || c4 > 5){
+            printf("\nTipo invalido...\n");
         }
-    }while(r1 == 0);
+    } while(c3 < 1 || c3 > 5);
 
+    carac_ptr->Cor_dos_Olhos = c4;
+
+    printf("Digite o peso: ");
+    char* peso = lerResposta(sizeof(carac_ptr->peso), stdin);
+    strncpy(carac_ptr->peso, peso, sizeof(carac_ptr->peso) - 1);
+    carac_ptr->peso[sizeof(carac_ptr->peso) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
+
+    printf("Digite a altura: ");
+
+    char* altura = lerResposta(sizeof(carac_ptr->peso), stdin);
+
+    strncpy(carac_ptr->altura, altura, sizeof(carac_ptr->altura) - 1);
+    carac_ptr->altura[sizeof(carac_ptr->altura) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
+                
 }
-/*coisa ainda para finalizar:
 
-{funcao de caracteristicas fisicas:
+int obterResposta(const char* resposta) {
 
--criar a função para mostrar,tanto a da ficha tecnica, quanto a de caracteristicas, essa função vai seguir a logica de apenas mostrar as coisas que a pessoa tem,
-com ifs fazendo uma logica de que se for 1 mostra ela e se for 0, n mostra, a parte de salvar em arquivo deixa comigo, só lembra de fazer com que a função não deixe
-nenhum campo vazio, se n dá pau no arquivo, tem uma logica parecida na função "adiciona par", só olhar e vê que eu preencho com a palavra "desconhecido".
+    char respostaMaiuscula[4];
+    strncpy(respostaMaiuscula, resposta, 3);
+    respostaMaiuscula[3] = '\0';
 
-funçao que cria ids:
+    for (int i = 0; i < 3; i++) {
+        respostaMaiuscula[i] = toupper(respostaMaiuscula[i]);
+    }
 
-- função simples que vai colocar ids nas pessoas, só criar uma função void, com os parametros da struct casal(ela n está no main, está na função preenche filha)
-(lembra de colocar a struct com "&" na chamada da função), o sistema de id vai ser simples, primeira pessoa vai ser o 1  a segunda 2 ..., e preenche de 0s o resto
-do char[0].(provavelmente vai precisar usar arquivo, então se não for ser eu que fazer, só faz o principio dela, deixa ela salvando os ids normalmente, que dps eu
-acho uma forma de salvar isso no arquivo.
+    if (strcmp(respostaMaiuscula, "SIM") == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
 
-funcao de menu:
+void limparBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF) {}
+    printf("Aperte enter para continuar..\n");
+}
 
-- função só para mostra o menu, o main não tem nd declarado, então poderia usar uma função menu tranquilo e só ficar ela lá, o menu vai ter as opcoes de cadrastar
-pessoa, puxando a função de cadastrar(já feita), e a funcão de mostrar as pessoas salvas(puxando a outra função que tá lá), ao mostrar a pessoa, perguntar se ela
-deseja ver as informações da pessoa(perguntar se é o filho ou o conjugue) e mostrar a ficha tecnica dele, (basicamente printf de c->filho.ficha ou do conjugue)
-e por fim uma pergunta se ela deseja voltar para o menu 1(o que vai ter as opcoes de cadrastar, ver, sair do programa)
-
-corrigir bugs(deixa comigo essa parte):
-
-arrumar a leitura das informações
-warning da função adiciona par
-
-e por fim preciso implementar o ponteiro anterior da lista e a função de pastas
-e como vou ser um dos ultimos a terminar vou tentar criar funções sobre saude, que vai dar as chances do filho do casal ter isso ou aquilo...
-
-(nao esquecem de criar as tarefas no projeto, atribuir como issues e colocar vcs como responsaveis, e dps finalizar issues trazendo ela para o ultimo campo,
-pq se não o claudio n vê que foram vcs que fizeram e só fica eu como que fez mais de 10 tarefas lá)
-
-
-e por fim testa as funções pq mais tarde eu vou só finalizar meus bugs, adicionar alguma coisa ali ou aqui, e não vai dar para testar tudo.
-*/
+char* lerResposta(int tamanho, FILE* fluxo) {
+    static char resposta[100]; // Variável estática para manter seu valor entre chamadas
+    int valido;
+    do {
+        valido = 0;
+        fgets(resposta, tamanho, fluxo);
+        resposta[strcspn(resposta, "\n")] = '\0';
+        if (strlen(resposta) > 0 && strspn(resposta, " \t") != strlen(resposta)) {
+            valido = 1;
+        }
+    } while (!valido);
+    return resposta;
+}

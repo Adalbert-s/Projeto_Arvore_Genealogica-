@@ -85,4 +85,5 @@ Fontes de Referência
 
 -Metodo de pesquisa em busca de informacoes do projeto: Bing AI 
 
--Busca para resolução de warning: https://stackoverflow.com/questions/45129741/gcc-7-wimplicit-fallthrough-warnings-and-portable-way-to-clear-them
+-Busca para resolução de warning: https://stackoverflow.com/
+-Manipulação de filas em arquivos: https://www.clubedohardware.com.br/forums

@@ -57,7 +57,7 @@ aprimorar a precisão dos algoritmos de análise.
 
 GCC Instalado.
 
-Versão do compilador 20.03.
+Versão do compilador 20,03.
 
 ===========================================================================
 

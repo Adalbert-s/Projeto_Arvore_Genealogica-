@@ -31,7 +31,7 @@ Metodo de pesquisa em busca de informacoes do projeto: Bing AI */
 #include <dirent.h>
 
 #define id "IF"
-#define NOME_ARQUIVO "dados.bin"
+#define NOME_ARQUIVO "./arquivos/dados.bin"
 
 //estrutura das doencas que essa pessoa pode ter.
 typedef struct FichaTecnica{
@@ -284,7 +284,7 @@ int lerID() {
 }
 
 void salvarID(int idPadrao) {
-    FILE* arquivo = fopen("id.txt", "w");
+    FILE* arquivo = fopen("./Registro/id.txt", "w");
     if (arquivo != NULL) {
         fprintf(arquivo, "%d", idPadrao);
         fclose(arquivo);

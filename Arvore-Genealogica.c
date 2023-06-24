@@ -341,15 +341,15 @@ int escrever_arquivo(casal *C) {
     printf("ID:%s\n", C->filho.ID);
 
     printf("Digite o nome: ");
-    fgets(C->filho.nome, sizeof(C->filho.nome) - 1, stdin);
-    C->filho.nome[strcspn(C->filho.nome, "\n")] = '\0';
+    fgets(C->filho.nome, sizeof(C->filho.nome) - 1, stdin);                            // Lê uma linha de entrada e armazena no nome do filho
+    C->filho.nome[strcspn(C->filho.nome, "\n")] = '\0';                                // Remove o caractere de nova linha (\n) do final da string
 
     printf("Digite a idade: ");
-    fgets(C->filho.idade, sizeof(C->filho.idade) - 1, stdin);
+    fgets(C->filho.idade, sizeof(C->filho.idade) - 1, stdin);                          // Lê uma linha de entrada e armazena na Idade do filho
     C->filho.idade[strcspn(C->filho.idade, "\n")] = '\0';
 
     printf("Digite o peso: ");
-    fgets(C->filho.peso, sizeof(C->filho.peso) - 1, stdin);
+    fgets(C->filho.peso, sizeof(C->filho.peso) - 1, stdin);                            // Lê uma linha de entrada e armazena no peso do filho
     C->filho.peso[strcspn(C->filho.peso, "\n")] = '\0';
 
 
@@ -371,13 +371,13 @@ int escrever_arquivo(casal *C) {
 
 
 
-    /*if (existe_pessoa(nome_arquivo_registro)) {
+    /*if (existe_pessoa(nome_arquivo_registro)) {                           //verifica se a pessoa já está cadastrada verificando a existência do registro usando a função existe_pessoa
         printf("Erro, Casal ja cadrastada!\n");
         printf("Deseja fazer alteracoes nas informacoes desse casal?\n");
         getchar();
         fgets(op, sizeof(op), stdin);
         if (op[0] == 's' || op[0] == 'S') {
-            goto continuar;
+            goto continuar;                                             // Se a resposta do usuário for 's' ou 'S', vai para a etiqueta 'continuar' para prosseguir com as alterações
         } else {
             return 0;
         }
@@ -400,12 +400,12 @@ int escrever_arquivo(casal *C) {
     printf("Peso:%i\n", C->conjugue.peso);*/
 
 
-/*fprintf(file, "%s\n", C->ID);
+/*fprintf(file, "%s\n", C->ID);                                                                         //responsável por escrever informações em um arquivo. Cada linha utiliza a função fprintf para escrever os valores das variáveis nas posições correspondentes no arquivo especificado pelo ponteiro file
 fprintf(file, "%s %s %s %f\n", C->filho.ID, C->filho.nome, C->filho.idade, C->filho.peso);
 fprintf(file, "%s %s %s %f\n", C->conjugue.ID, C->conjugue.nome, C->conjugue.idade, C->conjugue.peso);*/
 
 
-    fwrite(&C, sizeof(casal), 1, file);
+    fwrite(&C, sizeof(casal), 1, file);                                                                 //A função fwrite é utilizada para escrever os dados do objeto C no arquivo especificado pelo ponteiro file. O primeiro argumento &C representa o endereço de memória onde estão armazenados os dados do objeto 
     fclose(file);
 
     return 1;
@@ -595,7 +595,7 @@ int salvar(ListaLDE *inicio, ListaLDE *ponteiro, TCabecalho cab) {
     return 0;
 }
 
-void PreencheFicha(void *struct_ptr, int tipo) {
+void PreencheFicha(void *struct_ptr, int tipo) {                                                   //preenche a ficha de características de uma pessoa representada por uma estrutura casal ou conjugue, dependendo do tipo especificado.
     int c;
     char r[4];
     casal *casal_ptr = struct_ptr;
@@ -615,7 +615,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
         c = 0;
         printf("\nA pessoa é saudável? ");
         fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0'; // Remover o caractere '\n' do final da string
+        r[strcspn(r, "\n")] = '\0';                                                                 // Remover o caractere '\n' do final da string
         for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }
@@ -637,7 +637,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
             r[R] = toupper(r[R]);
         }
         if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Sindrome_de_Down = 1;
+            ficha_ptr->Sindrome_de_Down = 1;                                ////Este trecho de código está dentro de um loop do-while e é responsável por solicitar e armazenar a informação se a pessoa possui ou não a Sindrome de Down.
             c = 1;
         } else if (strcmp(r, "NAO") == 0) {
             c = 1;
@@ -653,7 +653,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
             r[R] = toupper(r[R]);
         }
         if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Sindrome_de_Turner = 1;
+            ficha_ptr->Sindrome_de_Turner = 1;                                      //Este trecho de código está dentro de um loop do-while e é responsável por solicitar e armazenar a informação se a pessoa possui ou não a Sindrome de Turner.
             c = 1;
         } else if (strcmp(r, "NAO") == 0) {
             c = 1;
@@ -717,7 +717,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
             r[R] = toupper(r[R]);
         }
         if (strcmp(r, "SIM") == 0) {
-            ficha_ptr->Doenca_de_Huntington = 1;
+            ficha_ptr->Doenca_de_Huntington = 1;                                                    //Este trecho de código está dentro de um loop do-while e é responsável por solicitar e armazenar a informação se a pessoa possui ou não a Doença de Huntington.
             c = 1;
         } else if (strcmp(r, "NAO") == 0) {
             c = 1;
@@ -725,7 +725,8 @@ void PreencheFicha(void *struct_ptr, int tipo) {
     } while (c == 0);
 }
 
-void PreencheCaracteristicas(void *struct_ptr, int tipo) {
+void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No início da função, é feita uma verificação do tipo para determinar qual ponteiro de estrutura deve ser utilizado para acessar as características físicas.
+                                                                      // O ponteiro casal_ptr é atribuído ao endereço de memória da estrutura correspondente
 
     casal *casal_ptr = struct_ptr;
     ficha *carac_ptr;
@@ -761,7 +762,7 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {
             case 5:
                 r1 = 1;
                 break;
-            default: printf("\nCor invalida...\n");
+            default: printf("\nCor invalida...\n");                           //Após isso, é feita uma verificação utilizando um switch-case. Se o valor de c1 corresponder a um dos casos válidos (1 a 5)
         }
     }while(r1 == 0);
 /*TA AQUI--------------------------------------*/

@@ -104,6 +104,7 @@ typedef struct no {
     casal casal;
 
     struct no *prox;
+    struct no *ant;
 
     int tam;
 
@@ -145,6 +146,7 @@ char* lerResposta(int tamanho, FILE* fluxo);
 void gerarID(casal *C);
 void salvarID(int idPadrao);
 int lerID();
+void ancestral(ListaLDE *aux, casal *C);
 
 int main(void){
     int opcao;                                              // Variavel para Escolha das opçoes do menu
@@ -367,22 +369,29 @@ void cadastrar() {
         /* Cria uma lista encadeada */
 
         if (!inicio) {
-            aux = inicio = malloc(sizeof(ListaLDE));
-            if (!inicio) {
-                printf("Erro ao alocar memória.\n");
-                return;
-            }
-            inicio->casal = C;
-            inicio->prox = NULL;
-        } else {
-            aux = aux->prox = malloc(sizeof(ListaLDE));
+            aux = malloc(sizeof(ListaLDE));
             if (!aux) {
                 printf("Erro ao alocar memória.\n");
                 return;
             }
             aux->casal = C;
+            aux->ant = NULL;
             aux->prox = NULL;
-        }
+        } else {
+                ListaLDE *atras = inicio;
+                while (atras->prox != NULL) {
+                    atras = atras->prox;
+                }
+                aux = malloc(sizeof(ListaLDE));
+                if (!aux) {
+                    printf("Erro ao alocar memória.\n");
+                    return;
+                }
+                aux->casal = C;
+                aux->ant = atras;
+                aux->prox = NULL;
+                atras->prox = aux; // Atualizar o ponteiro 'prox' do último nó
+            }
 
         printf("\nDeseja sair (S/N):\t");
         scanf("%c", &tecla);
@@ -448,7 +457,7 @@ void cadastrar() {
         printf("|%-15s   %-15s|\n", "Cor dos Olhos:", "Cor dos Olhos:");
         printf("|%-15d   %-15d|\n\n", aux->casal.filho.caracfis.Cor_dos_Olhos, aux->casal.conjugue.caracfis.Cor_dos_Olhos);
 
-
+        ancestral(aux, &C);
         
         aux = aux->prox;
     }
@@ -822,6 +831,70 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No iníc
                 
 }
 
+void ancestral(ListaLDE *aux, casal *C){
+
+    int avoD = aux->ant->casal.filho.ficha.Diabetes;
+    int avD = aux->ant->casal.conjugue.ficha.Diabetes;
+    int paiD = C->filho.ficha.Diabetes;
+    int maeD = C->conjugue.ficha.Diabetes;
+
+    int porcentagemDiabetes = avoD + avD + paiD + maeD;
+    if (porcentagemDiabetes > 2) {
+        printf("\nPode ser que seu futuro filho tenha Diabetes");
+    }
+
+    int avoDC = aux->ant->casal.filho.ficha.Doenca_Cardiovascular;
+    int avDC = aux->ant->casal.conjugue.ficha.Doenca_Cardiovascular;
+    int paiDC = C->filho.ficha.Doenca_Cardiovascular;
+    int maeDC = C->conjugue.ficha.Doenca_Cardiovascular;
+
+    int porcentagemDoencaCardio = avoDC + avDC + paiDC + maeDC;
+    if (porcentagemDoencaCardio > 2) {
+        printf("\nPode ser que seu futuro filho tenha alguma doença cardiovascular");
+    }
+
+    int avoDH = aux->ant->casal.filho.ficha.Doenca_de_Huntington;
+    int avDH = aux->ant->casal.conjugue.ficha.Doenca_de_Huntington;
+    int paiDH = C->filho.ficha.Doenca_de_Huntington;
+    int maeDH = C->conjugue.ficha.Doenca_de_Huntington;
+
+    int porcentagemHuntington = avoDH + avDH + paiDH + maeDH;
+    if (porcentagemHuntington > 2) {
+        printf("\nPode ser que seu futuro filho tenha Doenca de Huntington");
+    }
+
+    int avoh = aux->ant->casal.filho.ficha.Hemofilia;
+    int avh = aux->ant->casal.conjugue.ficha.Hemofilia;
+    int paih = C->filho.ficha.Hemofilia;
+    int maeh = C->conjugue.ficha.Hemofilia;
+
+    int porcentagemHemofilia = (avoh + avh + paih + maeh);
+    if(porcentagemHemofilia > 2){
+        printf("\nPode ser que seu futuro filho tenha Hemofilia");
+    }
+
+    int avosD = aux->ant->casal.filho.ficha.Sindrome_de_Down;
+    int avsD  = aux->ant->casal.conjugue.ficha.Sindrome_de_Down;
+    int paisD = C->filho.ficha.Sindrome_de_Down;
+    int maesD = C->conjugue.ficha.Sindrome_de_Down;
+
+    int porcentagemdown = (avosD + avsD + paisD + maesD);
+    if(porcentagemdown > 2){
+        printf("\nPode ser que seu futuro filho tenha Sindrome de Down");
+    }
+
+    int avost = aux->ant->casal.filho.ficha.Sindrome_de_Turner;
+    int avst = aux->ant->casal.conjugue.ficha.Sindrome_de_Turner;
+    int paist = C->filho.ficha.Sindrome_de_Turner;
+    int maest = C->conjugue.ficha.Sindrome_de_Turner;
+
+    int porcentagemturner = (avost + avst + paist + maest);
+    if(porcentagemturner > 2){
+        printf("\nPode ser que seu futuro filho tenha Sindrome de Turner");
+    }
+    
+}
+
 int obterResposta(const char* resposta) {
 
     char respostaMaiuscula[4];
@@ -842,7 +915,7 @@ int obterResposta(const char* resposta) {
 void limparBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
-    printf("Aperte enter para continuar..\n");
+    printf("\nAperte enter para continuar..\n");
 }
 
 char* lerResposta(int tamanho, FILE* fluxo) {

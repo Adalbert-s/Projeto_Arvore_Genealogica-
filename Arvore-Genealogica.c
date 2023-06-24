@@ -304,7 +304,7 @@ void Adiciona_conjugue(casal *C){
 short int Adiciona_par(casal *C){
 
     char opcao[5];
-    if(C != NULL && C->filho.idade != NULL && C->filho.idade >= 18){                                     // Verifica se o casal existe e se o filho tem idade maior ou igual a 18
+    if (C != NULL && C->filho.idade != NULL && *(C->filho.idade) >= 18){                                     // Verifica se o casal existe e se o filho tem idade maior ou igual a 18
         printf("Essa pessoa e casada? \n");
         fgets(opcao, sizeof(opcao), stdin);
 
@@ -615,7 +615,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {                                
         c = 0;
         printf("\nA pessoa é saudável? ");
         fgets(r, sizeof(r), stdin);
-        r[strcspn(r, "\n")] = '\0';                                                                 // Remover o caractere '\n' do final da string
+        r[strcspn(r, "\n")] = '\0';                                                     // Remover o caractere '\n' do final da string
         for (unsigned int R = 0; R < strlen(r); R++) {
             r[R] = toupper(r[R]);
         }

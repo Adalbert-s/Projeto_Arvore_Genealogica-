@@ -1,0 +1,9 @@
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/Experimental.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/Nightly.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/Continuous.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/NightlyMemoryCheck.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/ARVORE.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/PACKAGE.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/RUN_TESTS.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Adalberto Santos/OneDrive/Documentos/ARVORE/Build/CMakeFiles/ZERO_CHECK.dir

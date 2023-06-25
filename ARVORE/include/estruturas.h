@@ -2,10 +2,13 @@
 #define ESTRUTURAS_H
 
 //estrutura das doencas que essa pessoa pode ter.
+
 typedef struct FichaTecnica{
 
     int Saudavel;                                       //usuario saudavel(nao possui nenhuma doenca)
+
     //doencas hereditarias
+
     int Sindrome_de_Down;                               //Sindrome de Down
     int Sindrome_de_Turner;                             //Sindrome de Turner
     int Hemofilia;                                      //Hemofilia
@@ -14,22 +17,24 @@ typedef struct FichaTecnica{
     int Doenca_Cardiovascular;                          //Doenca Cardiovascular
     int Doenca_de_Huntington;                           //Doenca de Huntington
 
-}ficha;
+}ficha;                                                 //tais campos vao ser preenchidos com 1 para sim e 2 para nao
 
+//estrutura destinada a caracteristicas fisicas.
 
 typedef struct CaracteristicasFisicas{
 
-    int Cor_do_Cabelo;
-    int Tipo_de_Cabelo;
-    int Cor_da_Pele;
-    int Cor_dos_Olhos;
+    int Cor_do_Cabelo;                                  //cor de cabelo 5 opcoes disponiveis para ser preenchido ( 1 - 5)
+    int Tipo_de_Cabelo;                                 //tipo de cabelo 4 opcoes disponiveis para ser preenchido ( 1 - 4)
+    int Cor_da_Pele;                                    //tipo de pele 4 opcoes disponiveis para ser preenchido ( 1 - 4)
+    int Cor_dos_Olhos;                                  //cor dos olhos 4 opcoes disponiveis para ser preenchido ( 1 - 4)
 
-    char peso   [10];
-    char altura [10];
+    char peso   [10];                                   //peso, atualmente um char
+    char altura [15];                                   //altura, tambem como char
 
 }caracfis;
 
 //estrutura com as informacoes de cada um dos 2.
+
 typedef struct FILHO{
 
     //informacoes basicas.
@@ -40,6 +45,8 @@ typedef struct FILHO{
     //informacoes sobre suas doencas
 
     struct FichaTecnica ficha;
+
+    //informacoes sobre suas caracteristicas
     struct CaracteristicasFisicas caracfis;
 
 }filho;
@@ -50,22 +57,26 @@ typedef struct CONJUGUE{
     char nome   [50];
     char idade  [10];
 
+    //informacoes sobre suas doencas
     struct FichaTecnica ficha;
+
+    //informacoes sobre suas caracteristicas
     struct CaracteristicasFisicas caracfis;
 
 }conjugue;
 
 //estrutura com as informacoes do casal.
+
 typedef struct{
 
     char ID[8];
 
-    struct FILHO filho;                   //descendecia: filho pertencente a arvore(1), conjugue(0). //(idade,descedencia(pai),nivel).
+    struct FILHO filho;                   
     struct CONJUGUE conjugue;
 
-}casal;                                    //*pessoa[2] (estrutura casal recebe 2 pessoas(struct pessoa)).
+}casal;                                    
 
-//estrutura da arvore.
+//estrutura da Lista
 
 typedef struct no {
 
@@ -78,10 +89,13 @@ typedef struct no {
 
 }ListaLDE;
 
+//estrutura de cabecario
+
 typedef struct
 {
   char ID[3];
   unsigned short q_registros;
+
 }TCabecalho;
 
 #endif // ESTRUTURAS_H

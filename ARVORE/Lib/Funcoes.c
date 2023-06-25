@@ -5,16 +5,21 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <locale.h>
 
-#define id "IF"
-#define NOME_ARQUIVO "./Registro/dados.bin"
+#define id "IF"                                 //destinada a funcao de ler arwuivo
+#define NOME_ARQUIVO "./Registro/dados.bin"     //endereco do arquivo
 
 #include "../include/declaracoes.h"
 #include "../include/estruturas.h"
 
-void usage(int menu){
+void usage(int menu){                           //funcao que fornece as legendas 
 
-    if(menu == 1){
+    setlocale(LC_ALL, "Portuguese");
+
+/*=========================================================================================================================*/
+
+    if(menu == 1){                              //menu do main
         printf("Uso: programa Arvore Genealogica\n");
         printf("No menu mostrado voce deve apertar as teclas de 0 - 3  informando a sua opção\n");
         printf("Opcoes:\n");
@@ -22,98 +27,126 @@ void usage(int menu){
         printf("  -2   Opcao B(Vai ate a interface para que possa ser visto as informacoes das pessoas ja cadrastradas)\n");
         printf("  -3   Opcao B(Vem ate esse menu)\n");
         printf("  -0   Opcao B(Sai do programa)\n\n");
-    }else if(menu == 2){
+
+/*=========================================================================================================================*/
+
+    }else if(menu == 2){                        //menu da funcao adiciona filho
+
         printf("\nNo menu que sera mostrado abaixo você deve adicionar as informações de Nome e idade da primeira pesssoa do casal)\n");
         printf("-Nota: Não adicione nomes muitos grandes para não ocorrer algume erro\n");
-    }else if(menu == 3){
+
+/*=========================================================================================================================*/
+
+    }else if(menu == 3){                        //menu da funcao adiciona conjugue
+
         printf("\nAqui voce ira adicionar a pessoa na qual elá é casada, lembre-se de responder apenas 's' = sim / 'N' = nao\n");
         printf("\nSe caso não deseja adicionar, apenas responda 'N'\n");
-    }else if(menu == 4){
+
+/*=========================================================================================================================*/
+
+    }else if(menu == 4){                        //menu da funcao de ficha tecnica
+
         printf("\nAgora voce tera que adicionar as informações medicas dessa pessoa, serao algumas perguntas de doencas potencialmente hereditarias\n");
         printf("\nNota: responda apenas com  's' = sim / 'N' = nao \n");
-    }else if (menu == 5){
+
+/*=========================================================================================================================*/
+
+    }else if (menu == 5){                       //menu da funcao de caracteristicas fisicas
+
         printf("\nE por fim algumas perguntas de caracteristicas fisicas, ira ser passado algumas perguntas basicas e voce deverá responder com o numero indicado na legenda da pergunta.\n");
         printf("\nExemplo: 1 para se seu cabelo e castanho\n");
+
+/*=========================================================================================================================*/
+
     }else{
         printf("\nErro.");
     }
     
 }
 
-short int cria_pastas(void){
+short int cria_pastas(void){                    //funcao que cria pastas
 
     int status;                                 //variavel de status, determina a condicao da criacao das pastas.
 
-    if(!verificaPasta("./Registro")) {
+    if(!verificaPasta("./Registro")) {          //se na funcao verifica pasta retornar que elas nao existe, ela cria a pasta
 
         status = mkdir("./Registro");
+
         if (status == 0)
-            printf("Pasta 'Registro' criada com sucesso.\n");
+
+            printf("Pasta 'Registro' criada com sucesso.\n");   //se tudo ocorrer bem, retorna a mensagem
+
         else
-            printf("Falha ao criar a pasta 'Registro'.\n");
+
+            printf("Falha ao criar a pasta 'Registro'.\n");     //senao, retorna essa
+
     } else {
-        printf("A pasta 'Registro' ja existe.\n");
+
+        printf("A pasta 'Registro' ja existe.\n");              //se a pasta ja existe, so retorna a mensagem
     }
 
-    if(!verificaPasta("./arquivos")) {
+    if(!verificaPasta("./arquivos")) {          //se na funcao verifica pasta retornar que elas nao existe, ela cria a pasta
 
         status = mkdir("./arquivos");
         if (status == 0)
-            printf("Pasta 'arquivos' criada com sucesso.\n");
+            printf("Pasta 'arquivos' criada com sucesso.\n");   //se tudo ocorrer bem, retorna a mensagem
         else
-            printf("Falha ao criar a pasta 'arquivos'.\n");
+            printf("Falha ao criar a pasta 'arquivos'.\n");     //senao, retorna essa
     } else {
-        printf("A pasta 'arquivos' ja existe.\n");
+        printf("A pasta 'arquivos' ja existe.\n");              //se a pasta ja existe, so retorna a mensagem
     }
 
     return 1;
 }
 
-void Adiciona_filho(casal *C){
+void Adiciona_filho(casal *C){                  //funcao que adiciona informacoes (filho)           
 
-    usage(2);
+    usage(2);                                   //legenda
     printf("Por favor adicione os dados:\n");
-    limparBuffer();
+    limparBuffer();                             //limpa o buffer
 
     printf("Digite o nome: ");
 
-    char* nomeFilho = lerResposta(sizeof(C->filho.nome), stdin);
-    strncpy(C->filho.nome, nomeFilho, sizeof(C->filho.nome) - 1);
-    C->filho.nome[sizeof(C->filho.nome) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
+    char* nomeFilho = lerResposta(sizeof(C->filho.nome), stdin);    // criei uma variavel para armazenar
 
-    printf("Digite a idade: ");                         //por idade ser um inteiro, n�o vou ter uma string de comparacao, ent�o criei uma variavel para armazenar.
-    char* idadeFilho = lerResposta(sizeof(C->filho.idade), stdin);
-    strncpy(C->filho.idade, idadeFilho, sizeof(C->filho.idade) - 1);
-    C->filho.idade[sizeof(C->filho.idade) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
+    strncpy(C->filho.nome, nomeFilho, sizeof(C->filho.nome) - 1);   //se tudo der certo na funcao, armazena no campo    
+    C->filho.nome[sizeof(C->filho.nome) - 1] = '\0';                // Garantir que a string tenha o caractere nulo no final
+
+    printf("Digite a idade: ");
+
+    char* idadeFilho = lerResposta(sizeof(C->filho.idade), stdin);  // criei uma variavel para armazenar
+
+    strncpy(C->filho.idade, idadeFilho, sizeof(C->filho.idade) - 1);//se tudo der certo na funcao, armazena no campo
+    C->filho.idade[sizeof(C->filho.idade) - 1] = '\0';              // Garantir que a string tenha o caractere nulo no final
 
 }
 
-void Adiciona_conjugue(casal *C){
+void Adiciona_conjugue(casal *C){               //funcao que adiciona informacoes (conjugue)
 
-    usage(2);
-    limparBuffer();
+    usage(2);                                   //legenda
+    limparBuffer();                             //limpa o buffer
 
     printf("Digite o nome: ");
 
-    char* nomeconjugue = lerResposta(sizeof(C->conjugue.nome), stdin);
+    char* nomeconjugue = lerResposta(sizeof(C->conjugue.nome), stdin);// criei uma variavel para armazenar
 
-    strncpy(C->conjugue.nome, nomeconjugue, sizeof(C->conjugue.nome) - 1);
+    strncpy(C->conjugue.nome, nomeconjugue, sizeof(C->conjugue.nome) - 1);//se tudo der certo na funcao, armazena no campo 
     C->conjugue.nome[sizeof(C->conjugue.nome) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
 
     printf("Digite a idade: ");
 
-    char* idadeconjugue = lerResposta(sizeof(C->conjugue.idade), stdin);
+    char* idadeconjugue = lerResposta(sizeof(C->conjugue.idade), stdin);// criei uma variavel para armazenar
 
-    strncpy(C->conjugue.idade, idadeconjugue, sizeof(C->conjugue.idade) - 1);
+    strncpy(C->conjugue.idade, idadeconjugue, sizeof(C->conjugue.idade) - 1);//se tudo der certo na funcao, armazena no campo 
     C->conjugue.idade[sizeof(C->conjugue.idade) - 1] = '\0';  // Garantir que a string tenha o caractere nulo no final
 
 }
 
-short int Adiciona_par(casal *C){
+short int Adiciona_par(casal *C){               //funcao que adiciona par
 
-    usage(3);
+    usage(3);                                   //legenda
     char opcao[5];
-    if (C != NULL && C->filho.idade != NULL && *(C->filho.idade) >= 18){                                     // Verifica se o casal existe e se o filho tem idade maior ou igual a 18
+    if (C != NULL && C->filho.idade != NULL && *(C->filho.idade) >= 18){ // Verifica se o casal existe e se o filho tem idade maior ou igual a 18
         printf("Deseja adicionar a pessoa com quem ela e casada? \n");
         fgets(opcao, sizeof(opcao), stdin);
 
@@ -122,88 +155,95 @@ short int Adiciona_par(casal *C){
             return 1;                                                   // Retorna 1 para indicar que a pessoa deve ser adicionada
         }
         else{
-            char desconhecido[20] = "desconhecido";                                 // Define os valores "desconhecido" para o ID, nome, idade e peso do c�njuge
+            char desconhecido[20] = "desconhecido";                     // Define os valores "desconhecido" para o ID, nome, idade e peso do c�njuge
             strcpy(C->conjugue.nome, desconhecido);
             strcpy(C->conjugue.idade, desconhecido);
         }
     }
-    return 0;                                                           // Retorna 0 para indicar que nenhuma a��o adicional � necess�ria
+    return 0;                                                           // Retorna 0 para indicar que nenhuma acao adicional e necessaria
 }
 
-int lerID() {
-    int idPadrao = 100000; // Valor padr�o caso o arquivo n�o exista
+int lerID() {                                   //funcao que recupera id em arquivo
 
-    FILE* arquivo = fopen("id.txt", "r");
-    if (arquivo != NULL) {
+    int idPadrao = 100000; // Valor padrao caso o arquivo nao exista
+
+    FILE* arquivo = fopen("id.txt", "r");       //abre o arquivo
+    if (arquivo != NULL) {                      //se der certo, le o id
         fscanf(arquivo, "%d", &idPadrao);
-        fclose(arquivo);
+        fclose(arquivo);                        //fecha o arquivo
     }
 
-    return idPadrao;
+    return idPadrao;                            //retorna o id para a funcao             
 }
 
-void salvarID(int idPadrao) {
-    FILE* arquivo = fopen("./arquivos/id.txt", "w");
+void salvarID(int idPadrao) {                   //funcao que salva o id em arquivo
+
+    FILE* arquivo = fopen("./arquivos/id.txt", "w");    //abre o arquivo
     if (arquivo != NULL) {
-        fprintf(arquivo, "%d", idPadrao);
-        fclose(arquivo);
-    }
+        fprintf(arquivo, "%d", idPadrao);               //salva o id
+        fclose(arquivo);                                //fecha o arquivo
+    }   
 }
 
-void gerarID(casal* C) {
-    static int idPadrao = 100000;
+void gerarID(casal* C) {                        //funcao que gera id
+    static int idPadrao = 100000;               //id base, static int pois precisa permanecer salvo se sair dessa funcao
 
     if (idPadrao == 100000) {
         idPadrao = lerID();
     }
+    char idString[10];                          // Tamanho suficiente para armazenar o ID como uma string
 
-    char idString[10]; // Tamanho suficiente para armazenar o ID como uma string
-    sprintf(idString, "%d", idPadrao); // Converte o ID num�rico em uma string
+    sprintf(idString, "%d", idPadrao);          // Converte o ID numerico em uma string
 
-    strcpy(C->ID, idString); // Copia a string do ID para a estrutura
+    strcpy(C->ID, idString);                    // Copia a string do ID para a estrutura
 
-    idPadrao++;
-    salvarID(idPadrao);
+    idPadrao++;                                 //adiciona mais 1 para a proxima utilizacao
+    salvarID(idPadrao);                         //chama a funcao para salvar
 }
 
-short int verificaPasta(const char* nomePasta) {
+short int verificaPasta(const char* nomePasta) {//funcao responsavel por verificar pasta
 
     struct stat st;
+
     if(stat(nomePasta, &st) == 0) {
         if (S_ISDIR(st.st_mode)) {
             // A pasta existe
             return 1;
         } else {
-            // O caminho existe, mas n�o � uma pasta
+            // O caminho existe, mas nao e uma pasta
             return 0;
         }
     } else {
-        // A pasta n�o existe
+        // A pasta nao existe
         return 0;
     }
 }
 
-void cadastrar() {
+void cadastrar() {                              //funcao de cadastro
 
-    ListaLDE *inicio = NULL, *aux;
-    casal C;
+    ListaLDE *inicio = NULL, *aux;              //cria ponteiros para lista
+    casal C;                                    //cria a struct
     char tecla;
 
-    limparBuffer();
+    limparBuffer();                             //limpa o buffer
 
     /* Cadastro */
     do{
+        //chama cada funcao para adicionar seus respectivos campos
 
-        Adiciona_filho(&C);
-        PreencheFicha(&C,1);
-        PreencheCaracteristicas(&C, 1);
+        Adiciona_filho(&C);                 //nome e idade
+        PreencheFicha(&C,1);                //nome e idade
+        PreencheCaracteristicas(&C, 1);     //caracteristicas
 
-        if(Adiciona_par(&C)){
+        if(Adiciona_par(&C)){               //se tiver par entra nesse if para adicionar as informacoes
 
-            Adiciona_conjugue(&C);
-            PreencheFicha(&C,2);
-            PreencheCaracteristicas(&C, 2);
+            Adiciona_conjugue(&C);          //nome e idade
+            PreencheFicha(&C,2);            //nome e idade
+            PreencheCaracteristicas(&C, 2); //caracteristicas
+
         }else{
+            //se não tiver par, so coloca 0s e desconhecidos nos campos da struct conjugue
+
             C.conjugue.ficha.Saudavel = 0;
             C.conjugue.ficha.Sindrome_de_Down = 0;
             C.conjugue.ficha.Sindrome_de_Turner = 0;
@@ -216,42 +256,49 @@ void cadastrar() {
             C.conjugue.caracfis.Cor_da_Pele = 0;
             C.conjugue.caracfis.Cor_dos_Olhos = 0;
 
-            char desconhecido[20] = "desconhecido";                                 // Define os valores "desconhecido" para o ID, nome, idade e peso do c�njuge
+            char desconhecido[20] = "desconhecido"; // Define os valores "desconhecido" para o ID, nome, idade e peso do conjuge
+
             strcpy(C.conjugue.caracfis.peso, desconhecido);
             strcpy(C.conjugue.caracfis.altura, desconhecido);
         }
 
-        gerarID(&C);
+        gerarID(&C);                //gera o id para o casal
 
-        fflush(stdin);
+        fflush(stdin);              //limpa o buffer
 
         /* Cria uma lista encadeada */
 
         if (!inicio) {
+            //caso de primeira insercao
+
             aux = inicio = malloc(sizeof(ListaLDE));
             if (!inicio) {
                 printf("Erro ao alocar memoria.\n");
                 return;
             }
-            inicio->casal = C;
-            inicio->prox = NULL;
+
+            inicio->casal = C;      //salva as informacoes no campo da lista
+            inicio->prox = NULL;            
         } 
         else {
-                ListaLDE *atras = inicio;
-                while (atras->prox != NULL) {
-                    atras = atras->prox;
-                }
-                aux = malloc(sizeof(ListaLDE));
-                if (!aux) {
-                    printf("Erro ao alocar memória.\n");
-                    return;
-                }
-                aux->casal = C;
-                aux->ant = atras;
-                aux->prox = NULL;
-                atras->prox = aux; // Atualizar o ponteiro 'prox' do último nó
+
+            //demais insercoes
+
+            ListaLDE *atras = inicio;
+            while (atras->prox != NULL) {       //acha o anterior a ele
+                atras = atras->prox;
+            }
+            aux = malloc(sizeof(ListaLDE));
+            if (!aux) {
+                printf("Erro ao alocar memória.\n");
+                return;
+            }
+            aux->casal = C;
+            aux->ant = atras;                   //aponta aux->ant para ele
+            aux->prox = NULL;
+            atras->prox = aux; // Atualizar o ponteiro 'prox' do último nó
         }
-        printf("\nDeseja sair (S/N):\t");
+        printf("\nDeseja sair (S/N):\t");       //pergunta se deseja sair do cadastro
         scanf("%c", &tecla);
         getchar();
 
@@ -278,7 +325,7 @@ void cadastrar() {
         printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
         printf("--------------------------------\n");
 
-        printf("|%-15s   %-15s|\n", "Saudavel:", "Saudavel:");
+        printf("|%-15s   %-15s|\n", "Saudavel:", "Saudavel:");          //operadores ternarios para facilitar
         printf("|%-15s   %-15s|\n\n", aux->casal.filho.ficha.Saudavel ? "Sim" : "Nao", aux->casal.conjugue.ficha.Saudavel ? "Sim" : "Nao");
 
         printf("|%-15s   %-15s|\n", "Diabetes:", "Diabetes:");
@@ -327,12 +374,13 @@ void cadastrar() {
 /*=======================================================================================================================*/
 
     /* Salva a lista em um arquivo */
+
     TCabecalho cab;
     if (salvar(inicio, aux, cab) == -1) {
         printf("Erro ao salvar os dados.\n");
     }
 
-    /* Libera a mem�ria */
+    /* Libera a memoria */
     aux = inicio;
     while (aux) {
         inicio = aux->prox;
@@ -341,47 +389,45 @@ void cadastrar() {
     }
 }
 
-void recuperar() {
+void recuperar() {                              //funcao que carrega as informacoes do arquivo
 
     TCabecalho cab;
     FILE* file;
     casal* C = NULL;
     int cont;
 
-    file = fopen(NOME_ARQUIVO, "rb");
+    file = fopen(NOME_ARQUIVO, "rb");           //abre o arquivo
     if (!file) {
-        printf("Arquivo n�o encontrado.\n");
+        printf("Arquivo nao encontrado.\n");
         return;
     }
 
-    fread(&cab, sizeof(TCabecalho), 1, file);
+    fread(&cab, sizeof(TCabecalho), 1, file);   //le o arquivo com o auxilio da struct cab
     if (strcmp(cab.ID, id) != 0) {
-        printf("Arquivo inv�lido.\n");
+        printf("Arquivo invalido.\n");
         fclose(file);
         return;
     }
 
-    C = malloc(sizeof(casal) * cab.q_registros);
+    C = malloc(sizeof(casal) * cab.q_registros);//aloca a memoria
+
     if (!C) {
-        printf("Erro ao alocar mem�ria.\n");
+        printf("Erro ao alocar memoria.\n");
         fclose(file);
         return;
     }
 
-    for (cont = 0; cont < cab.q_registros; cont++) {
-        fread(&C[cont], sizeof(casal), 1, file);
+    for (cont = 0; cont < cab.q_registros; cont++) {    
+        fread(&C[cont], sizeof(casal), 1, file);        //enquanto tiver registros(por meio da struct cab), le o arquivo
     }
 
-    fclose(file);
+    fclose(file);                                       //fecha o arquivo, pois ja vai ter pegado as informacoes
 
-    for (cont = 0; cont < cab.q_registros; cont++) {
-       /* printf("\nFILHO:");
-        printf("\nNome:\t%s\nIdade:\t%s", C[cont].filho.nome, C[cont].filho.idade);
-        printf("\nCONJUGUE:");
-        printf("\nNome:\t%s\nIdade:\t%s", C[cont].conjugue.nome, C[cont].conjugue.idade);*/
+/*=========================================================================================================================*/
 
-
-                printf("\n----------|PESSOAS|----------\n");
+    for (cont = 0; cont < cab.q_registros; cont++) {        //mostra as informacoes 
+ 
+        printf("\n----------|PESSOAS|----------\n");
         printf("|%-15s   %-15s|\n", "FILHO", "CONJUGE");
         printf("--------------------------------\n");
 
@@ -439,7 +485,7 @@ void recuperar() {
     free(C);
 }
 
-int salvar(ListaLDE *inicio, ListaLDE *aux, TCabecalho cab) {
+int salvar(ListaLDE *inicio, ListaLDE *aux, TCabecalho cab) {   //funcao que salva as informacoes da struct em arquivo
     FILE *arq;
     ListaLDE *p;
 
@@ -476,26 +522,27 @@ int salvar(ListaLDE *inicio, ListaLDE *aux, TCabecalho cab) {
     return 0;
 }
 
-void PreencheFicha(void *struct_ptr, int tipo) {
+void PreencheFicha(void *struct_ptr, int tipo) { //funcao que preeenche a fiha
+
     int c ;
     char r[4];
     char saudavel[5];
     int op;
 
-    casal *casal_ptr = struct_ptr;
-    ficha *ficha_ptr;
+    casal *casal_ptr = struct_ptr;                  //funcao que recebe ambas as structs para salvar
+    ficha *ficha_ptr;                               //foi criado 2 ponteiros para referenciar os campos da struct
 
-    if (tipo == 1) {
-        ficha_ptr = &(casal_ptr->filho.ficha);
+    if (tipo == 1) {                                //essa referenciacao é feita aqui, com o dado enviado para ela
+        ficha_ptr = &(casal_ptr->filho.ficha);      //se foi enviado 1, ela salva na struct do filho
     } else if (tipo == 2) {
-        ficha_ptr = &(casal_ptr->conjugue.ficha);
+        ficha_ptr = &(casal_ptr->conjugue.ficha);   //se não, salva na struct do conjugue
     } else {
         printf("Tipo invalido\n");
         return;
     }
 
     printf("\nPreenchimento da Ficha Tecnica\n");
-    usage(4);
+    usage(4);                                       //legenda
 
     do {
         printf("\nA pessoa e saudavel? ");
@@ -503,10 +550,10 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
         if(saudavel[0] == 's' || saudavel[0] == 'S'){
             ficha_ptr->Saudavel = 1;
-            op = 1;
-            break;
+            op = 1;                                                         //serie de perguntas que seguem a mesma ideia 
+            break;                                                          //se responder sim, recebe 1, senao recebe 0
 
-        } else {
+        } else {                                                            //as respostas são mandadas para funcao de obter resposta
             ficha_ptr->Saudavel = 0;
             op = 0;
             break;
@@ -516,7 +563,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
     if(op == 0){
         do {
             c = 0;
-            printf("\nA pessoa tem S�ndrome de Down? ");
+            printf("\nA pessoa tem Sindrome de Down? ");
             fgets(r, sizeof(r), stdin);
             r[strcspn(r, "\n")] = '\0';
             int resposta = obterResposta(r);
@@ -531,7 +578,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
 
         do {
             c = 0;
-            printf("\nA pessoa tem S�ndrome de Turner? ");
+            printf("\nA pessoa tem Sindrome de Turner? ");
             fgets(r, sizeof(r), stdin);
             r[strcspn(r, "\n")] = '\0';
             int resposta = obterResposta(r);
@@ -604,7 +651,7 @@ void PreencheFicha(void *struct_ptr, int tipo) {
             }
         } while (c == 0);
 
-    }else{
+    }else{      //se a pessoa e saudavel, preenche os outros campos com 0s
 
         ficha_ptr->Sindrome_de_Down = 0;
         ficha_ptr->Sindrome_de_Turner = 0;
@@ -615,19 +662,19 @@ void PreencheFicha(void *struct_ptr, int tipo) {
     }
 }
 
-void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No in�cio da fun��o, � feita uma verifica��o do tipo para determinar qual aux de estrutura deve ser utilizado para acessar as caracter�sticas f�sicas.
+void PreencheCaracteristicas(void *struct_ptr, int tipo) { //funcao que preenche as caracteristicas fisicas da pessoa
 
     casal *casal_ptr = struct_ptr;
     caracfis *carac_ptr;
 
-    int c1, c2, c3, c4;
+    int c1, c2, c3, c4;             //segue o mesmo principio da preenche ficha, unica diferenca e que sao mais valores aceitos
 
     if (tipo == 1) {
         carac_ptr = &(casal_ptr->filho.caracfis);
     } else if (tipo == 2) {
         carac_ptr = &(casal_ptr->conjugue.caracfis);
     } else {
-        printf("Tipo inv�lido\n");
+        printf("Tipo invalido\n");
         return;
     }
 
@@ -697,31 +744,37 @@ void PreencheCaracteristicas(void *struct_ptr, int tipo) {           // No in�
 
 }
 
-int obterResposta(const char* resposta) {
-
-    char respostaMaiuscula[4];
-    strncpy(respostaMaiuscula, resposta, 3);
-    respostaMaiuscula[3] = '\0';
+int obterResposta(const char* resposta) {// Função para obter uma resposta em formato de string e retornar um valor inteiro
+    
+    char respostaMaiuscula[4];              
+    strncpy(respostaMaiuscula, resposta, 3);    // Copia os primeiros 3 caracteres da resposta
+    
+    respostaMaiuscula[3] = '\0';                // Adiciona o caractere nulo
+    
+    // Loop para converter em maiusculo
 
     for (int i = 0; i < 3; i++) {
         respostaMaiuscula[i] = toupper(respostaMaiuscula[i]);
     }
-
+    //retorna a resposta
     if (strcmp(respostaMaiuscula, "SIM") == 0) {
+        
         return 1;
     } else {
+      
         return 0;
     }
 }
 
-void limparBuffer() {
+void limparBuffer() {                   //funcao quelimpa buffer
     int c;
     while ((c = getchar()) != '\n' && c != EOF) {}
     printf("Aperte enter para continuar..\n");
 }
 
-char* lerResposta(int tamanho, FILE* fluxo) {
-    static char resposta[100]; // Vari�vel est�tica para manter seu valor entre chamadas
+char* lerResposta(int tamanho, FILE* fluxo) {   //funcao que le a resposta
+
+    static char resposta[100]; // Variavel estatica para manter seu valor entre chamadas
     int valido;
     do {
         valido = 0;
@@ -731,14 +784,14 @@ char* lerResposta(int tamanho, FILE* fluxo) {
             valido = 1;
         }
     } while (!valido);
-    return resposta;
+    return resposta;            //so retorna se o que foi lido seja aceito
 }
 
-void ancestral(ListaLDE *aux, casal *C){
+void ancestral(ListaLDE *aux, casal *C){        //funcao que calcula enfermidades
 
-    int avoD = aux->ant->casal.filho.ficha.Diabetes;
-    int avD = aux->ant->casal.conjugue.ficha.Diabetes;
-    int paiD = C->filho.ficha.Diabetes;
+    int avoD = aux->ant->casal.filho.ficha.Diabetes;            //mesmo principio em todas, salva os resultados dos avos e pais 
+    int avD = aux->ant->casal.conjugue.ficha.Diabetes;          //soma esses valores
+    int paiD = C->filho.ficha.Diabetes;                         //se for maior que 2, imprime a mensagem
     int maeD = C->conjugue.ficha.Diabetes;
 
     int porcentagemDiabetes = avoD + avD + paiD + maeD;

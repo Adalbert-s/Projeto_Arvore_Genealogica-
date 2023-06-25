@@ -18,34 +18,29 @@ Percuso em arvores:                                 http://www.ic.uff.br/~boeres
 Manipulacao de arquivos e ideias de projeto:        https://chat.openai.com/
 Metodo de pesquisa em busca de informacoes do projeto: Bing AI */
 
-/*dados de entrada : nome, idade, peso, ficha de saude, caracteristicas fisicas e parentesco*/
+/*dados de entrada : nome, idade, peso, ficha de saude, caracteristicas fisicas e caracteristicas fisicas*/
 
-/*estruturas: fun��es, estruturas de dados(vetores, structs, grafos(arvores, listas)), aloca��o din�mica, busca, ordena��o, manipula�ao de arquivos binarios*/
+/*estruturas: funcoes, estruturas de dados(vetores, structs, listas)), alocacao dinamica, manipulacao de arquivos binarios*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <ctype.h>
-#include <unistd.h>
-#include <dirent.h>
-
-#define id "IF"
-#define NOME_ARQUIVO "./Registro/dados.bin"
+#include <locale.h>
 
 #include "../include/declaracoes.h"
 #include "../include/estruturas.h"
 #include "../Lib/Funcoes.c"
 
 int main(void){
-    int opcao;                                              // Variavel para Escolha das op�oes do menu
 
-    cria_pastas();
+    int opcao;  
+    setlocale(LC_ALL, "Portuguese");                                            
+
+    cria_pastas();                                          //chama a funcao para criar as pastas
 
 /*=========================================================================================================================*/
-    usage(1);
+    usage(1);                                               //chama a funcao de legenda
     
-    do{                                                     // Menu de intera��o criado para usabilidade dos usuarios
+    do{                                                     // Menu de interacao criado para usabilidade dos usuarios
     printf("-----|ARVORE GENEALOGICA.|-----\n");
     printf("Digite a opcao desejada. \n");
     printf("1. Cadastrar Pessoa.\n");
@@ -55,7 +50,7 @@ int main(void){
 
     scanf("%d",&opcao);
 
-    switch(opcao){
+    switch(opcao){                                          //switch para o redirecionamento da opcao desejada
         case 1:
             cadastrar();
             break;
